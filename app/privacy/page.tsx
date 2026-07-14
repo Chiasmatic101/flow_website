@@ -3,7 +3,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen px-6 py-16 text-white">
       <section className="mx-auto max-w-4xl">
         <a href="/" className="text-sm font-semibold text-cyan-300/80">
-          ← Back to Flow
+          ← Back to Flux
         </a>
 
         <h1 className="mt-8 text-4xl font-black md:text-6xl">
@@ -14,7 +14,7 @@ export default function PrivacyPage() {
 
         <div className="mt-10 space-y-8 text-lg leading-8 text-white/60">
           <p>
-            Flow is designed to help users improve focus, study routines, sleep,
+            Flux is designed to help users improve focus, study routines, sleep,
             and recovery using personalized audio experiences.
           </p>
 
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
             </h2>
             <p className="mt-3">
               We use this information to personalize audio, improve study and
-              sleep experiences, analyze app performance, and improve the Flow
+              sleep experiences, analyze app performance, and improve the Flux
               service over time.
             </p>
           </section>
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
             </h2>
             <p className="mt-3">
               Users may request account deletion or deletion of their data by
-              contacting the Flow support team.
+              contacting the Flux support team.
             </p>
           </section>
 
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
               Contact
             </h2>
             <p className="mt-3">
-              For privacy questions, contact us at: support@flowapp.com
+              For privacy questions, contact us at: alankelly@chiasmatic.co
             </p>
           </section>
         </div>
