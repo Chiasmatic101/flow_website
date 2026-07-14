@@ -4,20 +4,20 @@ const useCases = [
   {
     eyebrow: 'Sleep',
     title: 'A calmer wind-down experience.',
-    text: 'Use Flow at night to create a reliable pre-sleep audio routine that feels immersive, quiet, and easy to repeat.',
+    text: 'Use Flux at night to create a reliable pre-sleep audio routine that feels immersive, quiet, and easy to repeat.',
   },
   {
     eyebrow: 'Study',
     title: 'Sound environments for deeper focus.',
-    text: 'Use Flow during revision or study blocks to reduce distraction and create smoother, more consistent focus sessions.',
+    text: 'Use Flux during revision or study blocks to reduce distraction and create smoother, more consistent focus sessions.',
   },
 ]
 
 const studySteps = [
   'Pick a base sound you naturally enjoy listening to',
-  'Play Flow’s short cognitive testing games',
+  'Play short cognitive testing games',
   'The sound subtly changes as you focus',
-  'Flow learns what improves focus and memory',
+  'Flux learns what improves focus and memory',
   'Guided study sessions become personalized over time',
   'Simple.',
 ]
@@ -25,10 +25,10 @@ const studySteps = [
 const sleepSteps = [
   'Choose the soundscape you find most relaxing',
   'Begin a personalized sleep sound experiment',
-  'Flow subtly refines the soundscape each night',
+  'Flux subtly refines the soundscape each night',
   'Small changes in sound behaviour are tested',
   'Play our brain testing games and morning check',
-  'Flow learns how sound improves your sleep',
+  'Flux learns how sound improves your sleep',
   'Better sleep. Better cognition. No wearables required.',
 ]
 
@@ -57,7 +57,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <span className="text-2xl font-black tracking-tight">Flow</span>
+            <span className="text-2xl font-black tracking-tight">Flux</span>
           </a>
 
           <div className="hidden items-center gap-8 text-sm font-semibold text-white/55 md:flex">
@@ -92,7 +92,7 @@ export default function Home() {
           </h1>
 
           <p className="mt-7 max-w-2xl text-lg leading-8 text-white/58 md:text-xl">
-            Flow uses focus sessions, sleep experiments, and cognitive feedback
+            Flux uses focus sessions, sleep experiments, and cognitive feedback
             to create personalized audio environments that evolve over time.
           </p>
 
@@ -171,7 +171,7 @@ export default function Home() {
           <div className="grid items-center gap-10 rounded-[2.2rem] border border-white/10 bg-white/[0.03] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur-xl sm:rounded-[2.8rem] sm:p-6 md:grid-cols-2 md:p-10">
             <div className="flex flex-col justify-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300/70">
-                Study Flow
+                Study Flux
               </p>
 
               <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
@@ -266,7 +266,7 @@ export default function Home() {
 
             <div className="order-1 md:order-2">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-indigo-300/70">
-                Sleep Flow
+                Sleep Flux
               </p>
 
               <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
@@ -316,7 +316,7 @@ export default function Home() {
 
           <div className="relative text-center">
             <p className="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300/70">
-              Download Flow
+              Download Flux
             </p>
 
             <h2 className="mx-auto mt-5 max-w-4xl text-4xl font-black leading-tight md:text-6xl">
@@ -355,7 +355,7 @@ export default function Home() {
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
             <p className="text-center text-sm font-semibold text-white/30 md:text-left">
-              © 2026 Flow. Calibrated audio for sleep and study.
+              © 2026 Flux. Calibrated audio for sleep and study.
             </p>
 
             <div className="flex items-center gap-6 text-sm font-semibold text-white/45">
