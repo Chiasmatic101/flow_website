@@ -72,6 +72,82 @@ body {
   }
 }
 
+
+.delete-page {
+  min-height: 100vh;
+  padding: 80px 20px;
+  background: #f7f7fb;
+}
+
+.delete-card {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(20, 20, 40, 0.08);
+}
+
+.delete-card h1 {
+  margin-bottom: 16px;
+  font-size: 2rem;
+}
+
+.delete-card p {
+  margin-bottom: 16px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.delete-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.delete-card label {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.delete-card input,
+.delete-card textarea {
+  width: 100%;
+  padding: 14px;
+  font: inherit;
+  border: 1px solid #d6d6df;
+  border-radius: 10px;
+}
+
+.delete-card input:focus,
+.delete-card textarea:focus {
+  outline: 2px solid #5b32e6;
+  border-color: transparent;
+}
+
+.delete-card button {
+  margin-top: 14px;
+  padding: 15px 20px;
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  background: #5b32e6;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.delete-card button:hover {
+  opacity: 0.9;
+}
+
+.delete-card .small-text {
+  margin-top: 24px;
+  font-size: 0.9rem;
+}
+
 @keyframes cursorBlink {
   50% {
     border-color: transparent;
