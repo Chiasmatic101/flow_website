@@ -360,6 +360,9 @@ export default function Home() {
 
             <div className="flex items-center gap-6 text-sm font-semibold text-white/45">
               <Link href="/privacy" className="transition hover:text-white">
+               <Link href="/privacy" className="transition hover:text-white">
+                Privacy
+                </Link>
 
               </Link>
             <Link href="/delete-details" className="transition hover:text-white">
