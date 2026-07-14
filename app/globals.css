@@ -84,7 +84,7 @@ body {
   max-width: 640px;
   margin: 0 auto;
   padding: 40px;
-  background: white;
+  background: rgb(31, 115, 204);
   border-radius: 20px;
   box-shadow: 0 12px 40px rgba(20, 20, 40, 0.08);
 }
@@ -130,7 +130,7 @@ body {
 .delete-card button {
   margin-top: 14px;
   padding: 15px 20px;
-  color: white;
+  color: rgb(186, 130, 130);
   font: inherit;
   font-weight: 700;
   background: #5b32e6;
