@@ -1,10 +1,12 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import AcquisitionCapture from '@/components/AcquisitionCapture'
+import PublicJoinEntry from '@/components/PublicJoinEntry'
 
 export const metadata: Metadata = {
-  title: 'Flow | Audio for Sleep and Study',
+  title: 'Flux | Audio for Sleep and Study',
   description:
-    'Flow uses adaptive audio to help students sleep better, study deeper, and build better daily focus rhythms.',
+    'Explore Flux personalized audio for sleep and study. Join Mina Tests: community experiments into sleep, sound and cognition.',
 }
 
 export default function RootLayout({
@@ -13,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" data-scroll-behavior="smooth">
+      <body><AcquisitionCapture />{children}<PublicJoinEntry /></body>
     </html>
   )
 }

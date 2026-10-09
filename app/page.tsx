@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import MinaVideo from '@/components/MinaVideo'
+import { minaMedia } from '@/lib/server/mina-media'
 
 const useCases = [
   {
@@ -17,7 +19,7 @@ const studySteps = [
   'Pick a base sound you naturally enjoy listening to',
   'Play short cognitive testing games',
   'The sound subtly changes as you focus',
-  'Flux learns what improves focus and memory',
+  'Explore how sound relates to focus and memory',
   'Guided study sessions become personalized over time',
   'Simple.',
 ]
@@ -28,11 +30,12 @@ const sleepSteps = [
   'Flux subtly refines the soundscape each night',
   'Small changes in sound behaviour are tested',
   'Play our brain testing games and morning check',
-  'Flux learns how sound improves your sleep',
-  'Better sleep. Better cognition. No wearables required.',
+  'Explore how sound relates to your sleep',
+  'Track sleep. Test cognition. No wearables required.',
 ]
 
-export default function Home() {
+export default async function Home() {
+  const media = await minaMedia()
   return (
     <main className="min-h-screen overflow-hidden text-white">
       {/* ambient glows */}
@@ -61,6 +64,7 @@ export default function Home() {
           </a>
 
           <div className="hidden items-center gap-8 text-sm font-semibold text-white/55 md:flex">
+            <Link href="/mina-tests" className="text-cyan-200 transition hover:text-white">Mina Tests</Link>
             <a href="#use-cases" className="transition hover:text-white">
               Use cases
             </a>
@@ -96,13 +100,14 @@ export default function Home() {
             to create personalized audio environments that evolve over time.
           </p>
 
-          <div className="mt-10">
-            <a
-              href="#download"
+          <div className="mt-10 flex flex-wrap items-center gap-5">
+            <Link
+              href="/mina-tests#signup"
               className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 px-8 py-4 text-base font-bold text-white shadow-[0_12px_40px_rgba(108,99,255,0.30)] transition hover:scale-[1.02]"
             >
-              Download now — it&apos;s free
-            </a>
+              Download Flux →
+            </Link>
+            <a href="#download" className="inline-flex min-h-12 items-center text-sm font-semibold text-cyan-200">Explore / download Flux ↓</a>
           </div>
         </div>
 
@@ -124,7 +129,6 @@ export default function Home() {
                 muted
                 loop
                 playsInline
-                poster="/images/demo-poster.png"
               >
                 <source src="/videos/flow-demo.mp4" type="video/mp4" />
               </video>
@@ -175,7 +179,7 @@ export default function Home() {
               </p>
 
               <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-                Train your brain to focus longer.
+                Explore your focus through sound.
               </h2>
 
               <p className="mt-5 max-w-2xl text-lg leading-8 text-white/55">
@@ -228,7 +232,6 @@ export default function Home() {
                     muted
                     loop
                     playsInline
-                    poster="/images/study-poster.png"
                   >
                     <source src="/videos/study_demo.mp4" type="video/mp4" />
                   </video>
@@ -256,7 +259,6 @@ export default function Home() {
                     muted
                     loop
                     playsInline
-                    poster="/images/sleep-poster.png"
                   >
                     <source src="/videos/sleep_demo.mp4" type="video/mp4" />
                   </video>
@@ -270,12 +272,12 @@ export default function Home() {
               </p>
 
               <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-                Optimize sleep. Upgrade tomorrow.
+                Track sleep. Discover your patterns.
               </h2>
 
               <p className="mt-5 max-w-2xl text-lg leading-8 text-white/55">
-                Personalized sleep sound experiments designed to improve
-                recovery, cognition, and next-day mental performance.
+                Personalized sleep sound experiments to explore associations
+                between sleep and next-day cognitive performance.
               </p>
 
               <div className="mt-10 space-y-4">
@@ -309,6 +311,13 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="mina-tests" className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6" aria-labelledby="home-mina-title">
+        <div className="glass-card mina-home-grid p-6 sm:p-10 md:p-12">
+          <div><p className="eyebrow">SLEEP · SOUND · COGNITION</p><h2 id="home-mina-title" className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">Mina Tests</h2><p className="muted mt-5 text-lg">Community experiments into sleep, sound and cognition. Follow Mina as we ask questions, track patterns and share what we learn.</p><p className="muted mt-4">See what we&apos;re testing, how to take part and when genuine results are ready.</p><Link href="/mina-tests" className="flux-button mt-7">Learn more →</Link></div>
+          <MinaVideo {...media} />
+        </div>
+      </section>
+
       {/* CTA */}
       <section id="download" className="relative z-10 mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24">
         <div className="relative overflow-hidden rounded-[2.2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] px-6 py-12 shadow-[0_30px_80px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:rounded-[3rem] md:px-14 md:py-20">
@@ -326,27 +335,20 @@ export default function Home() {
             </h2>
 
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/55">
-              Study deeper, focus longer, and optimize sleep with adaptive
-              sound environments that evolve over time.
+              Explore study, focus, and sleep with adaptive sound
+              environments that evolve over time.
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <a
-                href="#"
-                className="flex min-h-14 w-full items-center justify-center rounded-full border border-white/10 bg-white/[0.05] px-8 text-sm font-bold text-white backdrop-blur transition hover:bg-white/[0.08] sm:w-auto"
-              >
-                Download on the App Store
-              </a>
-
-              <a
-                href="#"
+              <Link
+                href="/mina-tests#signup"
                 className="flex min-h-14 w-full items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 px-8 text-sm font-bold text-white shadow-[0_12px_35px_rgba(108,99,255,0.30)] transition hover:scale-[1.02] sm:w-auto"
               >
-                Get it on Google Play
-              </a>
+                Download Flux / Join Mina Tests →
+              </Link>
             </div>
 
-            <p className="mt-6 text-sm text-white/35">Free to download</p>
+            <p className="mt-6 text-sm text-white/35">Start with your email invite. Android download follows verification; iPhone is coming soon.</p>
           </div>
         </div>
       </section>
@@ -360,10 +362,7 @@ export default function Home() {
 
             <div className="flex items-center gap-6 text-sm font-semibold text-white/45">
               <Link href="/privacy" className="transition hover:text-white">
-               <Link href="/privacy" className="transition hover:text-white">
                 Privacy
-                </Link>
-
               </Link>
             <Link href="/delete-details" className="transition hover:text-white">
               Delete My Account

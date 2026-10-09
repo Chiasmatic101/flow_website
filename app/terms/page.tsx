@@ -1,10 +1,12 @@
+import Link from 'next/link'
+
 export default function TermsPage() {
   return (
     <main className="min-h-screen px-6 py-16 text-white">
       <section className="mx-auto max-w-4xl">
-        <a href="/" className="text-sm font-semibold text-cyan-300/80">
+        <Link href="/" className="text-sm font-semibold text-cyan-300/80">
           ← Back to Flux
-        </a>
+        </Link>
 
         <h1 className="mt-8 text-4xl font-black md:text-6xl">
           Terms & Conditions
