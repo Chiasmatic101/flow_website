@@ -12,13 +12,27 @@ export default function TermsPage() {
           Terms & Conditions
         </h1>
 
-        <p className="mt-6 text-white/50">Last updated: May 2026</p>
+        <p className="mt-6 text-white/50">Last updated: October 22, 2026</p>
 
         <div className="mt-10 space-y-8 text-lg leading-8 text-white/60">
+          <section><h2 className="text-2xl font-black text-white">Optional YouTube videos</h2><p className="mt-3">Flux uses YouTube API Services for optional Mina videos. By using these YouTube video features, you agree to be bound by the <a href="https://www.youtube.com/t/terms" className="text-cyan-300">YouTube Terms of Service</a>. The <a href="https://policies.google.com/privacy" className="text-cyan-300">Google Privacy Policy</a> also applies. You can use personal challenges without watching videos.</p></section>
           <p>
             These Terms & Conditions govern your use of Flux, an audio-based
             focus, study, sleep, and recovery app.
           </p>
+
+          <section>
+            <h2 className="text-2xl font-black text-white">Mina Tests challenges</h2>
+            <p className="mt-3">Mina Tests offers optional personal challenges for adults
+              aged 18 or older. Starting a challenge is a choice to track your own
+              experience. It is not enrollment in a clinical trial. Sleep check-ins
+              and comparisons describe your observations; they cannot prove that a
+              sound caused a change or establish a validated sleep treatment.</p>
+            <p className="mt-3">Keep audio at a comfortable volume. You can skip nights
+              and stop a challenge at any time. Missing or interrupted observations
+              may limit your results; Flux does not promise a benefit. Participation
+              does not by itself grant permission for generalizable research.</p>
+          </section>
 
           <section>
             <h2 className="text-2xl font-black text-white">

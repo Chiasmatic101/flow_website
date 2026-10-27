@@ -1,0 +1,122 @@
+{
+  "enrollmentModes": [
+    "personal-challenge-v1"
+  ],
+  "androidMinimumApi": 26,
+  "protocolSchemaVersions": [
+    1
+  ],
+  "activityVersions": {
+    "audio.silence": [
+      1
+    ],
+    "check_in": [
+      1
+    ],
+    "survey": [
+      1
+    ],
+    "audio.playback": [
+      1
+    ],
+    "cognitive.task": [
+      1
+    ]
+  },
+  "bundledSoundIds": [
+    "brown_noise",
+    "rain",
+    "ocean",
+    "forest",
+    "winter"
+  ],
+  "enrollmentSchemaVersions": [
+    1
+  ],
+  "questionFeatures": [
+    "scale-labels-step-v1"
+  ],
+  "schemaVersion": 1,
+  "questionTypes": [
+    "boolean",
+    "scale",
+    "single_choice",
+    "text"
+  ],
+  "sessionModes": [
+    "timed",
+    "overnight"
+  ],
+  "androidVerification": {
+    "evidence": "",
+    "verified": false,
+    "verifiedAt": "",
+    "features": [],
+    "appBuild": "com.chiasmatic.flow:1.0.0+13:4BC6F977AF4D65F7"
+  },
+  "randomizationUnits": [
+    "night",
+    "participant"
+  ],
+  "cognitiveTaskIds": [
+    "color_match",
+    "sequence_memory",
+    "tap_tap_tap",
+    "color_runner"
+  ],
+  "verified": false,
+  "audioAssets": [],
+  "scheduleSemantics": [
+    "local-evening-following-morning-v1",
+    "user-controlled-sleep-v1"
+  ],
+  "androidApplicationId": "com.chiasmatic.flow.staging",
+  "appBuild": "com.chiasmatic.flow:1.0.0+13:4BC6F977AF4D65F7",
+  "personalChallengeVerification": {
+    "verifiedAt": "",
+    "evidence": "",
+    "appBuild": "com.chiasmatic.flow:1.0.0+13:4BC6F977AF4D65F7",
+    "features": [],
+    "verified": false
+  },
+  "randomizationMethods": [
+    "none",
+    "weighted",
+    "paired_crossover"
+  ],
+  "verifiedAt": "",
+  "apkSha256": "67A551925C628D0B77D237753C644C44DEE66A8DAF02F4F6B633D7A9328977D0",
+  "implementationVersion": "mina-android-native-v2",
+  "bundledAssets": [
+    {
+      "id": "brown_noise",
+      "asset": "assets/audio/mina/brown_noise_loop.mp3",
+      "bytes": 678552,
+      "sha256": "b685a0638f7e08c09d9c4567806172e7521f660791d3e98e00b20a95f49cf989"
+    },
+    {
+      "id": "rain",
+      "asset": "assets/audio/ambient_sounds/rain_sounds/rain_ambience_constant.mp3",
+      "bytes": 2748480,
+      "sha256": "168f75307d8f43fc3812bbdcbe8d62ec884d975cd894447ae58ae32f4eb3a708"
+    },
+    {
+      "id": "ocean",
+      "asset": "assets/audio/ambient_sounds/ocean_sounds/ocean_ambience_constant.mp3",
+      "bytes": 2674296,
+      "sha256": "156a66ffa25490aaf442c5e9cbaa0d8767b660d51591f93d46482b3fc85e1ee2"
+    },
+    {
+      "id": "forest",
+      "asset": "assets/audio/ambient_sounds/forest_sounds/forest_ambience_constant.mp3",
+      "bytes": 2768448,
+      "sha256": "f384be72d9d993c6920ed6dfeb8e939bd0f9d921500d488ff33b810a1f09e7ad"
+    },
+    {
+      "id": "winter",
+      "asset": "assets/audio/ambient_sounds/winter_sounds/winter_ambience_constant.mp3",
+      "bytes": 2693280,
+      "sha256": "6bae749b9567ddb28ce06d40c29f7115cdd1c3be455cecc9f5c98c091e5a2ce2"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+release/mina-release-1/create-approved-draft.ts(20,270): error TS2339: Property 'wrapUpVideoUrl' does not exist on type 'Experiment'.

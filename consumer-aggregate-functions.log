@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: [brown-noise-001] validates, publishes, enrols and runs to completion through the generic engine
+ok 1 - [brown-noise-001] validates, publishes, enrols and runs to completion through the generic engine
+  ---
+  duration_ms: 95.7425
+  type: 'test'
+  ...
+# Subtest: [sound-concentration-001] validates, publishes, enrols and runs to completion through the generic engine
+ok 2 - [sound-concentration-001] validates, publishes, enrols and runs to completion through the generic engine
+  ---
+  duration_ms: 21.9165
+  type: 'test'
+  ...
+# Subtest: the two experiments are substantially different (so the test above means something)
+ok 3 - the two experiments are substantially different (so the test above means something)
+  ---
+  duration_ms: 4.8901
+  type: 'test'
+  ...
+# Subtest: both fixtures are DRAFT-only and contain no server-controlled or public-private data
+ok 4 - both fixtures are DRAFT-only and contain no server-controlled or public-private data
+  ---
+  duration_ms: 4.1276
+  type: 'test'
+  ...
+# Subtest: backend code contains no experiment-specific branches
+ok 5 - backend code contains no experiment-specific branches
+  ---
+  duration_ms: 70.9278
+  type: 'test'
+  ...
+# Subtest: personal start is explicit, adult, idempotent and stores no exact age or research permission
+ok 6 - personal start is explicit, adult, idempotent and stores no exact age or research permission
+  ---
+  duration_ms: 150.4268
+  type: 'test'
+  ...
+# Subtest: personal mode, verified capability and paused enrollment fail closed
+ok 7 - personal mode, verified capability and paused enrollment fail closed
+  ---
+  duration_ms: 9.9418
+  type: 'test'
+  ...
+# Subtest: later editorial wrap-up media can reach participants without changing their pinned plan
+ok 8 - later editorial wrap-up media can reach participants without changing their pinned plan
+  ---
+  duration_ms: 51.3085
+  type: 'test'
+  ...
+# Subtest: unverified candidates run only as explicit private tests in the exact staging project
+ok 9 - unverified candidates run only as explicit private tests in the exact staging project
+  ---
+  duration_ms: 44.7021
+  type: 'test'
+  ...
+# Subtest: seven-night consumer template has fixed silence baseline, balanced pairs, four check-in metrics and calendar windows
+ok 10 - seven-night consumer template has fixed silence baseline, balanced pairs, four check-in metrics and calendar windows
+  ---
+  duration_ms: 30.8781
+  type: 'test'
+  ...
+# Subtest: skip is server-owned, bounded to opened nights, idempotent and cannot invent or overwrite answers
+ok 11 - skip is server-owned, bounded to opened nights, idempotent and cannot invent or overwrite answers
+  ---
+  duration_ms: 199.7564
+  type: 'test'
+  ...
+# Subtest: withdrawal/deletion serialize with skips; private results remain owner-scoped
+ok 12 - withdrawal/deletion serialize with skips; private results remain owner-scoped
+  ---
+  duration_ms: 90.2978
+  type: 'test'
+  ...
+# Subtest: comparisons separate baseline, exclude interrupted/skipped nights, and never fill missing values
+ok 13 - comparisons separate baseline, exclude interrupted/skipped nights, and never fill missing values
+  ---
+  duration_ms: 28.7731
+  type: 'test'
+  ...
+# Subtest: results use current approved wrap-up media, including removal and withdrawn users
+ok 14 - results use current approved wrap-up media, including removal and withdrawn users
+  ---
+  duration_ms: 131.1362
+  type: 'test'
+  ...
+# Subtest: generic paired comparisons keep a consistent difference direction when pair orders differ
+ok 15 - generic paired comparisons keep a consistent difference direction when pair orders differ
+  ---
+  duration_ms: 25.7273
+  type: 'test'
+  ...
+# Subtest: any-time start, pinned randomization, one active across challenges, concurrent retry and restart
+ok 16 - any-time start, pinned randomization, one active across challenges, concurrent retry and restart
+  ---
+  duration_ms: 118.8403
+  type: 'test'
+  ...
+# Subtest: finish is idempotent and authoritative, 12h finish-to-start interval, late linked check-in
+ok 17 - finish is idempotent and authoritative, 12h finish-to-start interval, late linked check-in
+  ---
+  duration_ms: 32.4138
+  type: 'test'
+  ...
+# Subtest: unfinished check-in, forged times, wrong executor, unauthenticated calls, silence audio rejected
+ok 18 - unfinished check-in, forged times, wrong executor, unauthenticated calls, silence audio rejected
+  ---
+  duration_ms: 16.2469
+  type: 'test'
+  ...
+# Subtest: unstarted skips add no sleep or artificial cooldown; actual sessions retain the 12-hour interval
+ok 19 - unstarted skips add no sleep or artificial cooldown; actual sessions retain the 12-hour interval
+  ---
+  duration_ms: 22.0085
+  type: 'test'
+  ...
+# Subtest: withdrawal releases active session once; deletion barrier prevents recreation and removes participant lock
+ok 20 - withdrawal releases active session once; deletion barrier prevents recreation and removes participant lock
+  ---
+  duration_ms: 31.8665
+  type: 'test'
+  ...
+# Subtest: session policy rejects research, accelerated fixtures, unsupported bounds and extra fields
+ok 21 - session policy rejects research, accelerated fixtures, unsupported bounds and extra fields
+  ---
+  duration_ms: 2.7444
+  type: 'test'
+  ...
+# Subtest: generic seven-night rain plan supports linked games without brown-noise template constraints
+ok 22 - generic seven-night rain plan supports linked games without brown-noise template constraints
+  ---
+  duration_ms: 18.27
+  type: 'test'
+  ...
+# Subtest: generic results include night one when no baseline is configured
+ok 23 - generic results include night one when no baseline is configured
+  ---
+  duration_ms: 1.6045
+  type: 'test'
+  ...
+# Subtest: disclosed numeric aggregates are private, idempotent, participant-weighted and removed by deletion
+ok 24 - disclosed numeric aggregates are private, idempotent, participant-weighted and removed by deletion
+  ---
+  duration_ms: 14.2647
+  type: 'test'
+  ...
+# Subtest: older/disabled disclosures and interrupted nights never produce pooled outcomes
+ok 25 - older/disabled disclosures and interrupted nights never produce pooled outcomes
+  ---
+  duration_ms: 16.6295
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1707.0667

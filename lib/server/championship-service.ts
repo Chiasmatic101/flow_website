@@ -1,6 +1,10 @@
 import 'server-only'
 import { createHash, randomBytes, randomUUID } from 'node:crypto'
 import { activeMinaTest } from '../minaTestsConfig'
+import { experimentId as validateExperimentId, type Experiment } from '../mina-experiments'
+import type { StoreTransaction } from './championship-store'
+import { assertExecutable, CAPABILITIES_PATH, protocolDefinition } from './mina-protocol'
+import type { ExecutionCapabilities } from '../mina-protocol'
 import { isExcludedEmail, type MinaMembership } from './mina-model'
 import type { Acquisition, DeliveryState, Device, SignupInput, SignupReceipt } from '../championship-types'
 import { FunnelError } from '../championship-validation'
@@ -38,7 +42,24 @@ type Dependencies = { store: ChampionshipStore; mailer: Mailer; siteUrl: string 
 
 export function championshipService({ store, mailer, siteUrl, development, now = Date.now, referralGenerator = newReferral }: Dependencies) {
   const invitationOrigin = () => typeof siteUrl === 'function' ? siteUrl() : siteUrl
+  async function loadExperiment(tx: StoreTransaction, id: string) {
+    const rootPath = `minaExperiments/${validateExperimentId(id)}`, privatePath = `${rootPath}/private/admin`
+    const privateConfig = await tx.get<Experiment>(privatePath)
+    const root = await tx.get<Experiment>(rootPath)
+    if (!root) return null
+    if (root.visibility !== 'public' || root.publicationApproved !== true || root.environment !== (!process.env.FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID === 'flow-9d714' ? 'production' : 'staging')) throw new FunnelError('experiment_unavailable', 409)
+    if (privateConfig) return { ...privateConfig, status: root.status, storagePath: privatePath }
+    return root ? { ...root, storagePath: rootPath } : null
+  }
+  async function enrollmentConfig(tx: StoreTransaction, id: string, alreadyJoined = false) {
+    const config = await loadExperiment(tx, id)
+    if (!config && id !== activeMinaTest.id) throw new FunnelError('experiment_unavailable', 409)
+    if (config && (config.status !== 'published' || config.enrollmentEnabled !== true) && !alreadyJoined) throw new FunnelError('experiment_paused', 409)
+    if (config && !alreadyJoined) assertExecutable(config, await tx.get<ExecutionCapabilities>(CAPABILITIES_PATH))
+    return config
+  }
   async function signup(input: SignupInput) {
+    const experimentId = validateExperimentId(input.experimentId || activeMinaTest.id)
     // Sending configuration must be valid before signup writes any records.
     // Reading or confirming an existing invite does not need an email origin.
     invitationOrigin()
@@ -52,16 +73,17 @@ export function championshipService({ store, mailer, siteUrl, development, now =
     for (let attempt = 0; attempt < 8; attempt++) {
       const referralCode = referralGenerator()
       const result = await store.transaction(async tx => {
+        const config = await enrollmentConfig(tx, experimentId)
         const existing = await tx.get<{ participantId: string }>(index)
         if (existing) {
           const participant = await tx.get<Participant>(participantPath(existing.participantId))
           if (!participant || participant.emailNormalized !== input.email || participant.championshipId !== activeChampionship.id) throw new FunnelError('temporarily_unavailable', 503)
-          const membership = await tx.get<MinaMembership>(minaMembershipPath(existing.participantId))
+          const membership = await tx.get<MinaMembership>(minaMembershipPath(existing.participantId, experimentId))
           // A duplicate request does not prove email ownership. Never change the existing
           // participant, attribution, device, joined state or referral ownership here.
-          if (!membership) tx.set(minaMembershipPath(existing.participantId), membershipRecord(existing.participantId, input.acquisition, participant.isTestRecord === true || isExcludedEmail(input.email)))
-          tx.update(participantPath(existing.participantId), { experimentIds: [...new Set([...(participant.experimentIds || []), activeMinaTest.id])] })
-          tx.set(sessionPath(sessionToken), { participantId: existing.participantId, championshipId: activeChampionship.id, experimentId: activeMinaTest.id, kind: 'pending', email: input.email, device: input.device, delivery: input.device === 'iphone' ? 'waitlist' : 'unavailable', retryAfter: 0, createdAt: store.serverTimestamp(), expiresAt: store.timestamp(instant + DAY) })
+          if (!membership) tx.set(minaMembershipPath(existing.participantId, experimentId), membershipRecord(existing.participantId, input.acquisition, participant.isTestRecord === true || isExcludedEmail(input.email), experimentId, config))
+          tx.update(participantPath(existing.participantId), { experimentIds: [...new Set([...(participant.experimentIds || []), experimentId])] })
+          tx.set(sessionPath(sessionToken), { participantId: existing.participantId, championshipId: activeChampionship.id, experimentId: experimentId, kind: 'pending', email: input.email, device: input.device, delivery: input.device === 'iphone' ? 'waitlist' : 'unavailable', retryAfter: 0, createdAt: store.serverTimestamp(), expiresAt: store.timestamp(instant + DAY) })
           return existing.participantId
         }
         const collision = await tx.get<ReferralOwner>(`championshipReferralCodes/${referralCode}`)
@@ -75,25 +97,25 @@ export function championshipService({ store, mailer, siteUrl, development, now =
           status: 'invited', referralCode, referredBy: validReferral?.participantId ?? null,
           createdAt: store.serverTimestamp(), joinedAt: null, consentExperimentUpdates: true,
           acquisition: input.acquisition, fluxUid: null,
-          experimentIds: [activeMinaTest.id], isTestRecord: development || isExcludedEmail(input.email),
+          experimentIds: [experimentId], isTestRecord: development || isExcludedEmail(input.email),
         } satisfies Participant)
         tx.set(index, { participantId: candidateId, createdAt: store.serverTimestamp() })
         tx.set(`championshipReferralCodes/${referralCode}`, { participantId: candidateId, championshipId: activeChampionship.id, createdAt: store.serverTimestamp() })
-        if (validReferral) tx.set(`championshipReferrals/${candidateId}`, { championshipId: activeChampionship.id, experimentId: activeMinaTest.id, referrerParticipantId: validReferral.participantId, referredParticipantId: candidateId, referralCode: input.referralCode, status: 'signed_up', qualifiedAt: null, createdAt: store.serverTimestamp() })
-        tx.set(minaMembershipPath(candidateId), membershipRecord(candidateId, input.acquisition, isExcludedEmail(input.email)))
-        tx.set(sessionPath(sessionToken), { participantId: candidateId, championshipId: activeChampionship.id, experimentId: activeMinaTest.id, kind: 'pending', email: input.email, device: input.device, delivery: input.device === 'iphone' ? 'waitlist' : 'unavailable', retryAfter: 0, createdAt: store.serverTimestamp(), expiresAt: store.timestamp(instant + DAY) })
+        if (validReferral) tx.set(`championshipReferrals/${candidateId}`, { championshipId: activeChampionship.id, experimentId: experimentId, referrerParticipantId: validReferral.participantId, referredParticipantId: candidateId, referralCode: input.referralCode, status: 'signed_up', qualifiedAt: null, createdAt: store.serverTimestamp() })
+        tx.set(minaMembershipPath(candidateId, experimentId), membershipRecord(candidateId, input.acquisition, isExcludedEmail(input.email), experimentId, config))
+        tx.set(sessionPath(sessionToken), { participantId: candidateId, championshipId: activeChampionship.id, experimentId: experimentId, kind: 'pending', email: input.email, device: input.device, delivery: input.device === 'iphone' ? 'waitlist' : 'unavailable', retryAfter: 0, createdAt: store.serverTimestamp(), expiresAt: store.timestamp(instant + DAY) })
         return candidateId
       })
       if (result) { participantId = result; break }
     }
     if (!participantId) throw new FunnelError('temporarily_unavailable', 503)
-    const delivery = input.device === 'iphone' ? { delivery: 'waitlist' as const, retryAfter: 0 } : await sendInvite(participantId, input.device, activeMinaTest.id)
+    const delivery = input.device === 'iphone' ? { delivery: 'waitlist' as const, retryAfter: 0 } : await sendInvite(participantId, input.device, experimentId)
     await store.transaction(async tx => { tx.update(sessionPath(sessionToken), { delivery: delivery.delivery, retryAfter: delivery.retryAfter }) })
     return { sessionToken, receipt: { email: input.email, device: input.device, ...delivery } }
   }
 
-  function membershipRecord(participantId: string, acquisition: Acquisition, excluded: boolean): MinaMembership {
-    return { participantId, experimentId: activeMinaTest.id, status: 'signed_up', createdAt: store.serverTimestamp(), joinedAt: null, consentUpdates: true, acquisition, excludedFromPublicCounts: development || excluded, countSchemaVersion: 1 }
+  function membershipRecord(participantId: string, acquisition: Acquisition, excluded: boolean, experimentId = activeMinaTest.id, config: Experiment | null = null): MinaMembership {
+    return { participantId, experimentId, ...(config ? { protocolHash: config.protocolHash, protocolSnapshot: protocolDefinition(config), protocolVersion: config.protocolVersion, consentReference: config.consentReference, configRevision: config.revision } : {}), status: 'signed_up', createdAt: store.serverTimestamp(), joinedAt: null, consentUpdates: true, acquisition, excludedFromPublicCounts: development || excluded, countSchemaVersion: 1 }
   }
   async function sendInvite(participantId: string, device: Device, experimentId?: string): Promise<DeliveryResult> {
     const origin = invitationOrigin()
@@ -181,38 +203,48 @@ export function championshipService({ store, mailer, siteUrl, development, now =
       const validParticipant = participant!
       const membership = validInvite.experimentId ? await tx.get<MinaMembership>(minaMembershipPath(validInvite.participantId, validInvite.experimentId)) : null
       const referral = await tx.get<{ status: string; experimentId?: string }>(`championshipReferrals/${validInvite.participantId}`)
+      const config = validInvite.experimentId ? await loadExperiment(tx, validInvite.experimentId) : null
+      let canEnroll = !config || membership?.status === 'joined'
+      if (config?.status === 'published' && config.enrollmentEnabled === true && !canEnroll) {
+        const capabilities = await tx.get<ExecutionCapabilities>(CAPABILITIES_PATH)
+        try { assertExecutable(config, capabilities); canEnroll = true } catch { /* Email verification still works when execution has not been verified. */ }
+      }
       if (validInvite.experimentId && !membership) throw new FunnelError('invalid_invite')
       tx.update(invitePath(hash), { status: 'used', usedAt: store.serverTimestamp() })
-      if (membership && validInvite.device === 'android') tx.update(minaMembershipPath(validInvite.participantId, validInvite.experimentId), { status: 'joined', joinedAt: membership.joinedAt ?? store.serverTimestamp() })
-      if (referral?.status === 'signed_up' && referral.experimentId === validInvite.experimentId && validInvite.experimentId && validInvite.device === 'android' && !membership?.excludedFromPublicCounts) tx.update(`championshipReferrals/${validInvite.participantId}`, { status: 'qualified', qualifiedAt: store.serverTimestamp() })
+      if (canEnroll && membership && validInvite.device === 'android') tx.update(minaMembershipPath(validInvite.participantId, validInvite.experimentId), { status: 'joined', joinedAt: membership.joinedAt ?? store.serverTimestamp() })
+      if (canEnroll && referral?.status === 'signed_up' && referral.experimentId === validInvite.experimentId && validInvite.experimentId && validInvite.device === 'android' && !membership?.excludedFromPublicCounts) tx.update(`championshipReferrals/${validInvite.participantId}`, { status: 'qualified', qualifiedAt: store.serverTimestamp() })
       tx.update(participantPath(validInvite.participantId), { status: validParticipant.status === 'app_connected' ? 'app_connected' : 'joined', joinedAt: validParticipant.joinedAt ?? store.serverTimestamp(), device: validInvite.device })
       tx.set(sessionPath(sessionToken), { participantId: validInvite.participantId, championshipId: validInvite.championshipId, ...(validInvite.experimentId ? { experimentId: validInvite.experimentId } : {}), kind: 'joined', email: validParticipant.email, device: validInvite.device, delivery: validInvite.deliveryConfirmed ? 'sent' : 'unavailable', retryAfter: 0, createdAt: store.serverTimestamp(), expiresAt: store.timestamp(instant + 30 * DAY) })
       return validInvite.device
     })
     return { sessionToken, device }
   }
-  async function joinedParticipant(token: string | undefined) {
+  async function joinedParticipant(token: string | undefined, experimentId?: string) {
     const session = await readSession(token)
     if (!session || session.kind !== 'joined') return null
     const participant = await store.get<Participant>(participantPath(session.participantId))
     if (!participant || participant.championshipId !== activeChampionship.id || !['joined', 'app_connected'].includes(participant.status)) return null
-    const membership = await store.get<MinaMembership>(minaMembershipPath(session.participantId))
-    return { referralCode: participant.referralCode, device: participant.device, experimentJoined: membership?.status === 'joined' }
+    const selectedId = validateExperimentId(experimentId || session.experimentId || activeMinaTest.id)
+    const membership = await store.get<MinaMembership>(minaMembershipPath(session.participantId, selectedId))
+    return { experimentId: selectedId, referralCode: participant.referralCode, device: participant.device, experimentJoined: membership?.status === 'joined' }
   }
-  async function enrollVerified(token: string | undefined, acquisition: Acquisition) {
+  async function enrollVerified(token: string | undefined, acquisition: Acquisition, selectedExperimentId?: string) {
     const session = await readSession(token)
     if (!session || session.kind !== 'joined') throw new FunnelError('session_expired', 401)
+    const experimentId = validateExperimentId(selectedExperimentId || session.experimentId || activeMinaTest.id)
     return store.transaction(async tx => {
       const participant = await tx.get<Participant>(participantPath(session.participantId))
-      const membership = await tx.get<MinaMembership>(minaMembershipPath(session.participantId))
+      const membership = await tx.get<MinaMembership>(minaMembershipPath(session.participantId, experimentId))
       const referral = await tx.get<{ status: string; experimentId?: string }>(`championshipReferrals/${session.participantId}`)
+      const config = await enrollmentConfig(tx, experimentId, membership?.status === 'joined')
       if (!participant || !['joined', 'app_connected'].includes(participant.status)) throw new FunnelError('session_expired', 401)
       // iPhone remains interest only; no Android enrollment or referral qualification.
       const joined = participant.device === 'android'
-      if (!membership) tx.set(minaMembershipPath(session.participantId), { ...membershipRecord(session.participantId, acquisition, participant.isTestRecord === true || isExcludedEmail(participant.emailNormalized)), ...(joined ? { status: 'joined', joinedAt: store.serverTimestamp() } : {}) })
-      else if (joined && membership.status !== 'joined') tx.update(minaMembershipPath(session.participantId), { status: 'joined', joinedAt: store.serverTimestamp() })
-      if (joined && referral?.status === 'signed_up' && referral.experimentId === activeMinaTest.id && !(membership?.excludedFromPublicCounts ?? (development || participant.isTestRecord || isExcludedEmail(participant.emailNormalized)))) tx.update(`championshipReferrals/${session.participantId}`, { status: 'qualified', qualifiedAt: store.serverTimestamp() })
-      tx.update(participantPath(session.participantId), { experimentIds: [...new Set([...(participant.experimentIds || []), activeMinaTest.id])] })
+      if (!membership) tx.set(minaMembershipPath(session.participantId, experimentId), { ...membershipRecord(session.participantId, acquisition, participant.isTestRecord === true || isExcludedEmail(participant.emailNormalized), experimentId, config), ...(joined ? { status: 'joined', joinedAt: store.serverTimestamp() } : {}) })
+      else if (joined && membership.status !== 'joined') tx.update(minaMembershipPath(session.participantId, experimentId), { status: 'joined', joinedAt: store.serverTimestamp() })
+      if (joined && referral?.status === 'signed_up' && referral.experimentId === experimentId && !(membership?.excludedFromPublicCounts ?? (development || participant.isTestRecord || isExcludedEmail(participant.emailNormalized)))) tx.update(`championshipReferrals/${session.participantId}`, { status: 'qualified', qualifiedAt: store.serverTimestamp() })
+      tx.update(sessionPath(token!), { experimentId })
+      tx.update(participantPath(session.participantId), { experimentIds: [...new Set([...(participant.experimentIds || []), experimentId])] })
       return { device: participant.device }
     })
   }

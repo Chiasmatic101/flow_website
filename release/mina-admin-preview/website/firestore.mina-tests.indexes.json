@@ -1,0 +1,16 @@
+{
+  "indexes": [
+    { "collectionGroup": "minaTestParticipants", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "experimentId", "order": "ASCENDING" },
+      { "fieldPath": "countSchemaVersion", "order": "ASCENDING" },
+      { "fieldPath": "excludedFromPublicCounts", "order": "ASCENDING" }
+    ] },
+    { "collectionGroup": "minaTestParticipants", "queryScope": "COLLECTION", "fields": [
+      { "fieldPath": "experimentId", "order": "ASCENDING" },
+      { "fieldPath": "countSchemaVersion", "order": "ASCENDING" },
+      { "fieldPath": "excludedFromPublicCounts", "order": "ASCENDING" },
+      { "fieldPath": "status", "order": "ASCENDING" }
+    ] }
+  ],
+  "fieldOverrides": []
+}

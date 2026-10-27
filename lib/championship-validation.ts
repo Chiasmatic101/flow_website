@@ -1,3 +1,4 @@
+import { experimentId } from './mina-experiments'
 import { emptyAcquisition, type SignupInput } from './championship-types'
 
 export class FunnelError extends Error {
@@ -29,5 +30,5 @@ export function validateSignup(value: unknown): SignupInput {
       } else acquisition[key] = item.trim()
     }
   }
-  return { email, device: input.device, consent: true, referralCode: normalizeReferral(input.referralCode), acquisition }
+  return { ...(input.experimentId !== undefined ? { experimentId: experimentId(input.experimentId) } : {}), email, device: input.device, consent: true, referralCode: normalizeReferral(input.referralCode), acquisition }
 }

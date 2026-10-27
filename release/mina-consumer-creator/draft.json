@@ -1,0 +1,302 @@
+{
+  "results": null,
+  "durationNights": 7,
+  "environment": "production",
+  "instructions": "Start Sleep Session whenever you choose. Finish when you wake up, then complete its short check-in whenever convenient. Wait at least 12 hours after finishing before starting the next session. Late or missed nights do not expire your progress. Brown-noise sessions play bundled audio; silence sessions play no audio. This is personal exploration, not a validated sleep treatment.",
+  "protocolType": "paired-audio-comparison",
+  "protocolHash": "a25e19bac565d43e038714f6cba9f8e545e6118f37554a112ccc45bf8712a220",
+  "explanation": "Could brown noise change how you feel after a night’s sleep? Start with a silence baseline. Then compare one brown-noise night and one silence night in each of three two-night pairs. The order within each pair will be assigned by a trusted server. Discover your own patterns. This is personal exploration, not a validated sleep treatment.",
+  "visibility": "public",
+  "status": "draft",
+  "id": "does-brown-noise-help-you-sleep",
+  "protocol": {
+    "activities": [
+      {
+        "id": "brown-noise-audio",
+        "type": "audio.playback",
+        "version": 1,
+        "audioUrl": "",
+        "soundId": "brown_noise",
+        "durationSeconds": 0,
+        "sessionMode": "overnight",
+        "taskId": "",
+        "questionIds": []
+      },
+      {
+        "id": "silence-control",
+        "type": "audio.silence",
+        "version": 1,
+        "audioUrl": "",
+        "durationSeconds": 0,
+        "sessionMode": "overnight",
+        "taskId": "",
+        "questionIds": []
+      },
+      {
+        "id": "morning-check-in",
+        "type": "check_in",
+        "version": 1,
+        "audioUrl": "",
+        "durationSeconds": 0,
+        "taskId": "",
+        "questionIds": [
+          "sleep-quality",
+          "sleep-latency",
+          "awakenings",
+          "restedness",
+          "sleep-duration"
+        ]
+      }
+    ],
+    "enrollment": {
+      "consentVersion": "personal-challenge-v2",
+      "requirements": [],
+      "schemaVersion": 1,
+      "consentText": "Flux saves your assigned nights, server session start/finish times, device-observed playback duration, interruptions and optional sleep-duration estimates and short sleep check-ins to show your personal patterns. Your answers are private app data, not automatically included in generalizable research. You can skip nights, stop tracking, or delete your account and challenge data in Settings. Operators can see aggregate condition averages to operate the challenge. This is not permission for generalizable research.",
+      "minimumAge": 18,
+      "mode": "personal",
+      "aggregateResults": true
+    },
+    "questions": [
+      {
+        "id": "sleep-quality",
+        "prompt": "How well did you sleep last night?",
+        "type": "scale",
+        "required": true,
+        "options": [],
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "labels": [
+          "Very poorly",
+          "Poorly",
+          "Okay",
+          "Well",
+          "Very well"
+        ]
+      },
+      {
+        "id": "sleep-latency",
+        "prompt": "About how many minutes did it take to fall asleep?",
+        "type": "scale",
+        "required": true,
+        "options": [],
+        "min": 0,
+        "max": 180,
+        "step": 1
+      },
+      {
+        "id": "awakenings",
+        "prompt": "How many times did you wake during the night?",
+        "type": "scale",
+        "required": true,
+        "options": [],
+        "min": 0,
+        "max": 30,
+        "step": 1
+      },
+      {
+        "id": "restedness",
+        "prompt": "How rested do you feel this morning?",
+        "type": "scale",
+        "required": true,
+        "options": [],
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "labels": [
+          "Not at all",
+          "A little",
+          "Moderately",
+          "Well rested",
+          "Fully rested"
+        ]
+      },
+      {
+        "id": "sleep-duration",
+        "prompt": "About how many minutes did you sleep? (Your estimate, optional)",
+        "type": "scale",
+        "required": false,
+        "options": [],
+        "min": 0,
+        "max": 1440,
+        "step": 1
+      }
+    ],
+    "sessionPolicy": {
+      "mode": "user_controlled",
+      "schemaVersion": 1,
+      "minimumIntervalSeconds": 43200
+    },
+    "schemaVersion": 1,
+    "conditions": [
+      {
+        "id": "brown-noise",
+        "label": "Brown noise",
+        "activityIds": [
+          "brown-noise-audio"
+        ],
+        "weight": 1
+      },
+      {
+        "id": "silence",
+        "label": "Silence",
+        "activityIds": [
+          "silence-control"
+        ],
+        "weight": 1
+      }
+    ],
+    "randomization": {
+      "unit": "night",
+      "allocationOwner": "server",
+      "pairs": [
+        {
+          "nights": [
+            2,
+            3
+          ],
+          "conditionIds": [
+            "brown-noise",
+            "silence"
+          ]
+        },
+        {
+          "nights": [
+            4,
+            5
+          ],
+          "conditionIds": [
+            "brown-noise",
+            "silence"
+          ]
+        },
+        {
+          "nights": [
+            6,
+            7
+          ],
+          "conditionIds": [
+            "brown-noise",
+            "silence"
+          ]
+        }
+      ],
+      "method": "paired_crossover"
+    },
+    "nightlySchedule": [
+      {
+        "night": 1,
+        "phase": "evening",
+        "conditionId": "silence",
+        "activityIds": []
+      },
+      {
+        "night": 1,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "morning-check-in"
+        ]
+      },
+      {
+        "night": 2,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 2,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "morning-check-in"
+        ]
+      },
+      {
+        "night": 3,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 3,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "morning-check-in"
+        ]
+      },
+      {
+        "night": 4,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 4,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "morning-check-in"
+        ]
+      },
+      {
+        "night": 5,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 5,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "morning-check-in"
+        ]
+      },
+      {
+        "night": 6,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 6,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "morning-check-in"
+        ]
+      },
+      {
+        "night": 7,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 7,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "morning-check-in"
+        ]
+      }
+    ]
+  },
+  "introVideoUrl": "",
+  "thumbnailUrl": "",
+  "publishedVersion": "consumer-release-1",
+  "title": "Does Brown Noise Help You Sleep?",
+  "schemaVersion": 2,
+  "publicationApproved": false,
+  "eligibility": "For Flux users aged 18 or older.",
+  "protocolVersion": "consumer-release-1",
+  "updatedAt": "2026-10-26T17:52:34.871Z",
+  "instructionsVideoUrl": "",
+  "description": "Compare brown noise and silence across seven nights, with a short check-in after each sleep session.",
+  "wrapUpVideoUrl": "",
+  "consentReference": "personal-challenge-v2",
+  "enrollmentEnabled": false
+}

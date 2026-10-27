@@ -1,0 +1,18 @@
+{
+  "projectId": "prj_x3ogxGfETU7GVNBJgoBGxRdTS9LX",
+  "name": "flow-website-rz1d",
+  "nodeVersion": "24.x",
+  "framework": "nextjs",
+  "rootDirectory": null,
+  "buildCommand": null,
+  "productionEnvironmentKeys": [
+    "RESEND_API_KEY",
+    "NEXT_PUBLIC_SITE_URL",
+    "FIREBASE_PROJECT_ID",
+    "FIREBASE_CLIENT_EMAIL",
+    "FIREBASE_PRIVATE_KEY",
+    "CHAMPIONSHIP_FROM_EMAIL"
+  ],
+  "previousDeployment": "dpl_BvGnFQiHcBJz13Hz2eD25jrD9ECa",
+  "previousUrl": "flow-website-rz1d-gus5uu9hs-alan-kellys-projects.vercel.app"
+}

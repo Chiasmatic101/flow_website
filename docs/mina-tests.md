@@ -1,4 +1,8 @@
+> Current product direction: Mina Tests is a consumer feature inside Flux, using existing Flux accounts. See [consumer implementation and publication path](mina-consumer-product.md). Earlier staged/pilot notes are historical, not the current product workflow.
+
 # Mina Tests
+
+Stage 6A administration, database-backed experiment publishing, first-admin setup and the public configuration contract are documented in [Mina admin Stage 6A](./mina-admin-stage-6a.md). The static configuration described below remains the legacy acquisition fallback; new experiments are managed through the dashboard.
 
 ## Files in this update
 Created routes: `app/mina-tests/page.tsx`, `app/mina-tests/results/page.tsx`, `app/api/mina-tests/community/route.ts`, `app/api/mina-tests/enroll/route.ts`.
@@ -33,3 +37,5 @@ Before launch: supply the owned video, confirm the protocol and duration, config
 
 ## Validation
 Run `npm test`, `npm run lint`, and `npm run build`. Backend tests cover legacy invite compatibility, additive memberships, secure enrollment, qualified referrals, and cached aggregate failures alongside existing token, resend, attribution and concurrency checks. Browser checks use desktop and 360/390/430px layouts; unavailable backend checks and mocked client responses do not substitute for a credentialed production smoke test.
+
+Stage 7C open-enrollment architecture and release preparation: [readiness checklist](mina-stage-7c.md). This supersedes historical invitation-only research admission; optional email updates do not authorize research participation. No deployment or live enrollment changes were made.

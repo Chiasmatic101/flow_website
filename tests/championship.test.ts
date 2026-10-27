@@ -1,3 +1,5 @@
+import type { Experiment } from '../lib/mina-experiments'
+import { fixtureCapabilities, fixtureExperiment } from './mina-fixtures'
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { championshipService, hashToken, minaMembershipPath, type Mailer, type Participant } from '../lib/server/championship-service'
@@ -319,4 +321,86 @@ test('public count cache coalesces concurrent reads, caches for five minutes and
   const failed = aggregateCache(async () => { throw new Error('unconfigured') })
   const response = await failed(); assert.equal(response.available, false); assert.equal('signups' in response, false)
   assert.equal(isExcludedEmail('known@example.org'), true); assert.equal(isExcludedEmail('someone@test.invalid'), true); assert.equal(isExcludedEmail('someone@university.edu'), false)
+})
+
+// Stage 6A: configuration and membership transactions share the same store.
+test('database-backed experiments preserve canonical IDs, consent snapshots, attribution and per-experiment membership', async () => {
+  const f = await fixture()
+  const id = 'brown-noise-001'
+  await f.store.transaction(async tx => { tx.set(`minaExperiments/${id}`, { ...fixtureExperiment(id), revision: 3 }); tx.set('minaExecutionCapabilities/flutter', fixtureCapabilities) })
+  const result = await f.service.signup(f.input('configured', { experimentId: id, acquisition: { utmSource: 'test-source' } }))
+  const invite = await f.store.get<{ participantId: string; experimentId: string }>(`championshipInvites/${hashToken(rawToken(f.sent[0].url))}`)
+  assert.equal(invite?.experimentId, id)
+  const member = await f.store.get<MinaMembership>(minaMembershipPath(invite!.participantId, id))
+  assert.equal(member?.protocolVersion, 'fixture-v1'); assert.equal(member?.configRevision, 3); assert.equal(member?.consentReference, 'consent-v1')
+  assert.equal(member?.acquisition.utmSource, 'test-source')
+  assert.equal(await f.store.get(minaMembershipPath(invite!.participantId)), null, 'No competing legacy membership is created')
+  assert.equal(await f.service.joinedParticipant(result.sessionToken), null)
+  const joined = await f.service.join(rawToken(f.sent[0].url))
+  assert.equal((await f.service.joinedParticipant(joined.sessionToken))?.experimentId, id)
+  assert.equal((await f.service.joinedParticipant(joined.sessionToken))?.experimentJoined, true)
+  assert.equal((await f.store.get<{ enrollmentStarted: boolean }>(`minaExperiments/${id}`))?.enrollmentStarted, false)
+})
+
+test('pausing blocks signup and verified enrollment while old email links still verify without enrolling', async () => {
+  const f = await fixture(), id = 'brown-noise-paused'
+  await f.store.transaction(async tx => { tx.set(`minaExperiments/${id}`, fixtureExperiment(id)); tx.set('minaExecutionCapabilities/flutter', fixtureCapabilities) })
+  await f.service.signup(f.input('pause-race', { experimentId: id }))
+  const token = rawToken(f.sent[0].url)
+  const invite = await f.store.get<{ participantId: string }>(`championshipInvites/${hashToken(token)}`)
+  await f.store.transaction(async tx => tx.update(`minaExperiments/${id}`, { status: 'paused' }))
+  await assert.rejects(f.service.signup(f.input('new-paused', { experimentId: id })), isError('experiment_paused'))
+  await assert.rejects(f.service.signup(f.input('unknown', { experimentId: 'unknown-experiment' })), isError('experiment_unavailable'))
+  const joined = await f.service.join(token)
+  assert.equal((await f.service.joinedParticipant(joined.sessionToken))?.experimentJoined, false)
+  assert.equal((await f.store.get<MinaMembership>(minaMembershipPath(invite!.participantId, id)))?.status, 'signed_up')
+  await assert.rejects(f.service.enrollVerified(joined.sessionToken, f.input('a').acquisition, id), isError('experiment_paused'))
+  await f.store.transaction(async tx => tx.update(`minaExperiments/${id}`, { status: 'published' }))
+  await f.service.enrollVerified(joined.sessionToken, f.input('a').acquisition, id)
+  assert.equal((await f.service.joinedParticipant(joined.sessionToken))?.experimentJoined, true)
+  await f.store.transaction(async tx => tx.update(`minaExperiments/${id}`, { status: 'archived' }))
+  assert.equal((await f.service.joinedParticipant(joined.sessionToken))?.experimentJoined, true, 'Archiving preserves participant access')
+})
+
+test('unverified capabilities block enrollment and confirmation cannot assign a different protocol snapshot', async () => {
+  const f = await fixture(), id = 'runtime-gated'
+  const config = fixtureExperiment(id)
+  await f.store.transaction(async tx => { tx.set(`minaExperiments/${id}`, config); tx.set('minaExecutionCapabilities/flutter', { ...fixtureCapabilities, verified: false }) })
+  await assert.rejects(f.service.signup(f.input('blocked-runtime', { experimentId: id })), isError('flutter_capabilities_unverified_or_unsupported'))
+  await f.store.transaction(async tx => tx.set('minaExecutionCapabilities/flutter', fixtureCapabilities))
+  await f.service.signup(f.input('verified-runtime', { experimentId: id }))
+  const token = rawToken(f.sent[0].url)
+  const invite = await f.store.get<{ participantId: string }>(`championshipInvites/${hashToken(token)}`)
+  const memberPath = minaMembershipPath(invite!.participantId, id)
+  const before = await f.store.get<MinaMembership>(memberPath)
+  assert.equal(before?.protocolHash, config.protocolHash)
+  assert.equal(before?.protocolSnapshot?.protocol.activities[0].durationSeconds, 60)
+  await f.store.transaction(async tx => tx.set('minaExecutionCapabilities/flutter', { ...fixtureCapabilities, verified: false }))
+  const joined = await f.service.join(token)
+  assert.equal((await f.store.get<MinaMembership>(memberPath))?.status, 'signed_up')
+  await assert.rejects(f.service.enrollVerified(joined.sessionToken, f.input('a').acquisition, id), isError('flutter_capabilities_unverified_or_unsupported'))
+  await f.store.transaction(async tx => tx.set('minaExecutionCapabilities/flutter', fixtureCapabilities))
+  await f.service.enrollVerified(joined.sessionToken, f.input('a').acquisition, id)
+  const after = await f.store.get<MinaMembership>(memberPath)
+  assert.equal(after?.status, 'joined')
+  assert.deepEqual(after?.protocolSnapshot, before?.protocolSnapshot)
+  assert.equal(after?.protocolHash, before?.protocolHash)
+})
+
+test('enrollment reads the server-only canonical configuration and never writes private metadata to the public root', async () => {
+  const f = await fixture(), id = 'private-config-fixture'
+  const config = fixtureExperiment(id)
+  await f.store.transaction(async tx => {
+    tx.set(`minaExperiments/${id}`, { id, status: 'published', visibility: 'public', environment: 'production', publicationApproved: true, enrollmentEnabled: true, schemaVersion: 2, protocolHash: config.protocolHash })
+    tx.set(`minaExperiments/${id}/private/admin`, config)
+    tx.set('minaExecutionCapabilities/flutter', fixtureCapabilities)
+  })
+  await f.service.signup(f.input('private-config', { experimentId: id }))
+  const token = rawToken(f.sent[0].url)
+  const joined = await f.service.join(token)
+  assert.equal((await f.service.joinedParticipant(joined.sessionToken))?.experimentJoined, true)
+  const root = await f.store.get<Record<string, unknown>>(`minaExperiments/${id}`)
+  assert.equal(root?.enrollmentStarted, undefined)
+  assert.equal(root?.protocolReview, undefined)
+  assert.equal((await f.store.get<Experiment>(`minaExperiments/${id}/private/admin`))?.enrollmentStarted, false)
 })

@@ -1,0 +1,1 @@
+tests/mina-admin.test.ts(400,54): error TS2353: Object literal may only specify known properties, and 'introVideoUrl' does not exist in type 'DefinitionInput'.

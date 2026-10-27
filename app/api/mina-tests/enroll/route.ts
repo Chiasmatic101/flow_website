@@ -10,6 +10,6 @@ export async function POST(request: Request) {
     const value = await smallJson(request)
     if (!value || typeof value !== 'object' || !('consent' in value) || value.consent !== true) throw new FunnelError('consent_required')
     const input = validateSignup({ ...(value as object), email: 'validation@example.org', device: 'android', consent: true })
-    return json(await championshipBackend().enrollVerified((await cookies()).get(SESSION_COOKIE)?.value, input.acquisition))
+    return json(await championshipBackend().enrollVerified((await cookies()).get(SESSION_COOKIE)?.value, input.acquisition, input.experimentId))
   } catch (error) { return failure(error) }
 }

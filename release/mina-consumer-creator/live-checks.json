@@ -1,0 +1,27 @@
+{
+  "deployment": "dpl_G9EYDTLd1xLBHwo9apNka3JCDnnc",
+  "origin": "https://www.minatests.com",
+  "checks": [
+    {
+      "path": "/admin/experiments/new",
+      "http": 307
+    },
+    {
+      "path": "/api/admin/experiments",
+      "http": 401
+    },
+    {
+      "path": "/api/mina-tests/experiments/does-brown-noise-help-you-sleep",
+      "http": 404
+    },
+    {
+      "path": "/api/mina-tests/experiments",
+      "http": 200,
+      "brownNoiseExcluded": true
+    }
+  ],
+  "draftUnchanged": true,
+  "brownNoisePublished": false,
+  "enrollmentEnabled": false,
+  "verifiedAt": "2026-10-27T03:33:48.205Z"
+}

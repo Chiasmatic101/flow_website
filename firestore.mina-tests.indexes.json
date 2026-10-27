@@ -1,16 +1,252 @@
 {
   "indexes": [
-    { "collectionGroup": "minaTestParticipants", "queryScope": "COLLECTION", "fields": [
-      { "fieldPath": "experimentId", "order": "ASCENDING" },
-      { "fieldPath": "countSchemaVersion", "order": "ASCENDING" },
-      { "fieldPath": "excludedFromPublicCounts", "order": "ASCENDING" }
-    ] },
-    { "collectionGroup": "minaTestParticipants", "queryScope": "COLLECTION", "fields": [
-      { "fieldPath": "experimentId", "order": "ASCENDING" },
-      { "fieldPath": "countSchemaVersion", "order": "ASCENDING" },
-      { "fieldPath": "excludedFromPublicCounts", "order": "ASCENDING" },
-      { "fieldPath": "status", "order": "ASCENDING" }
-    ] }
+    {
+      "collectionGroup": "minaTestParticipants",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "experimentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "minaTestParticipants",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "experimentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "countSchemaVersion",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "excludedFromPublicCounts",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "minaTestParticipants",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "experimentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "countSchemaVersion",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "excludedFromPublicCounts",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "minaExperiments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "environment",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publicationApproved",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "visibility",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "minaExperiments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "environment",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publicationApproved",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "visibility",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "engine",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "experimentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "finalizedAtMs",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "responses",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "experimentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "response.endedReason",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "minaConditionStatistics",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "experimentId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "protocolHash",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "conditionId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "questionId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "value",
+          "order": "ASCENDING"
+        }
+      ]
+    }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "definition",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "assignments",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "executionAssets",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "consent",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "completionStates",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "sessionStartedAtMs",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "completedTaskIds",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "enrolledAtMs",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "withdrawnAtMs",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "finalizedAtMs",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaEnrollments",
+      "fieldPath": "localProgress",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaResearchDeletionLocks",
+      "fieldPath": "startedAtMs",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaExperiments",
+      "fieldPath": "protocol",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaExperiments",
+      "fieldPath": "protocolHash",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaExperiments",
+      "fieldPath": "updatedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "minaExperiments",
+      "fieldPath": "publishedAt",
+      "indexes": []
+    }
+  ]
 }

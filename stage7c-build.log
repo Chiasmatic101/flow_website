@@ -1,0 +1,53 @@
+▲ Next.js 16.4.0 (webpack)
+- Environments: .env.local
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\akpoo because it is outside the current Git repository (C:\Users\akpoo\flow-website).
+ To use this directory, set `outputFileTracingRoot` in your Next.js config.
+
+✓ Running next.config.ts took 517ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 28.1s
+  Running TypeScript ...
+  Finished TypeScript in 15.3s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/20) ...
+  Generating static pages using 11 workers (5/20) 
+  Generating static pages using 11 workers (10/20) 
+  Generating static pages using 11 workers (15/20) 
+✓ Generating static pages using 11 workers (20/20) in 2.2s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /admin
+├ ƒ /admin/experiments
+├ ƒ /admin/experiments/[id]
+├ ƒ /admin/experiments/[id]/preview
+├ ƒ /api/admin/experiments
+├ ƒ /api/admin/session
+├ ƒ /api/championship/join
+├ ƒ /api/championship/receipt
+├ ƒ /api/championship/resend
+├ ƒ /api/championship/signup
+├ ƒ /api/mina-tests/community
+├ ƒ /api/mina-tests/enroll
+├ ƒ /api/mina-tests/experiments
+├ ƒ /api/mina-tests/experiments/[id]
+├ ƒ /check-email
+├ ƒ /coming-soon
+├ ƒ /competition
+├ ○ /delete-details
+├ ƒ /experiment
+├ ƒ /join
+├ ƒ /mina-tests
+├ ƒ /mina-tests/[id]
+├ ƒ /mina-tests/results
+├ ○ /privacy
+└ ○ /terms
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

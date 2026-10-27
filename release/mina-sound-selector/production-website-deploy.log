@@ -1,0 +1,41 @@
+Vercel CLI 65.3.1 (Node.js 20.19.2)
+  Inspect         https://vercel.com/alan-kellys-projects/flow-website-rz1d/8hS5hpw5b6CZ8cRTKpcQ8gvVJx9S
+  Production      https://flow-website-rz1d-mx1eh49ht-alan-kellys-projects.vercel.app
+▲ Aliased         https://www.minatests.com
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_8hS5hpw5b6CZ8cRTKpcQ8gvVJx9S",
+    "url": "https://flow-website-rz1d-mx1eh49ht-alan-kellys-projects.vercel.app",
+    "productionUrl": "https://www.minatests.com",
+    "inspectorUrl": "https://vercel.com/alan-kellys-projects/flow-website-rz1d/8hS5hpw5b6CZ8cRTKpcQ8gvVJx9S",
+    "readyState": "READY",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_8hS5hpw5b6CZ8cRTKpcQ8gvVJx9S",
+    "buildMachine": {
+      "cores": 2,
+      "memory": 8192,
+      "machine": "basic",
+      "selectionType": "fixed",
+      "selectionSource": "plan-default"
+    },
+    "deploymentProtection": [
+      "vercel_authentication"
+    ]
+  },
+  "message": "Deployment flow-website-rz1d-mx1eh49ht-alan-kellys-projects.vercel.app ready. Production URL: https://www.minatests.com",
+  "next": [
+    {
+      "command": "vercel curl https://www.minatests.com",
+      "when": "Verify deployment, including when Deployment Protection is enabled"
+    },
+    {
+      "command": "vercel inspect flow-website-rz1d-mx1eh49ht-alan-kellys-projects.vercel.app --local-config C:\\Users\\akpoo\\flow-website\\release\\mina-sound-selector\\vercel.release1.json",
+      "when": "Inspect deployment"
+    },
+    {
+      "command": "vercel deploy --prod --local-config C:\\Users\\akpoo\\flow-website\\release\\mina-sound-selector\\vercel.release1.json",
+      "when": "Promote to production"
+    }
+  ]
+}

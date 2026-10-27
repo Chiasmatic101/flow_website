@@ -1,0 +1,15 @@
+{
+  "deployment": "dpl_8hS5hpw5b6CZ8cRTKpcQ8gvVJx9S",
+  "checks": [
+    {
+      "path": "/api/admin/experiments",
+      "http": 401,
+      "error": "admin_login_required"
+    },
+    {
+      "path": "/api/mina-tests/experiments",
+      "http": 200,
+      "experimentCount": 0
+    }
+  ]
+}

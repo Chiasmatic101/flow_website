@@ -1,0 +1,1 @@
+scripts/mina-stage8b-configure.ts(22,10): error TS2339: Property 'projectId' does not exist on type 'Firestore'.

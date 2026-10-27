@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "brown-noise-seven-night-pilot",
+  "protocolVersion": "pilot-draft-v1",
+  "protocolType": "brown-noise-seven-night-v1",
+  "protocol": {
+    "schemaVersion": 1,
+    "enrollment": {
+      "schemaVersion": 1,
+      "minimumAge": 18,
+      "consentVersion": "DRAFT-NOT-APPROVED",
+      "consentText": "DRAFT ONLY — approved participant consent, retention/deletion policy, research limitations and contact details must replace this before review. Do not enroll participants.",
+      "requirements": []
+    },
+    "activities": [
+      {
+        "id": "sound",
+        "type": "audio.playback",
+        "version": 1,
+        "audioUrl": "",
+        "durationSeconds": 0,
+        "taskId": "",
+        "questionIds": [],
+        "soundId": "brown_noise",
+        "sessionMode": "overnight"
+      },
+      {
+        "id": "quiet",
+        "type": "audio.silence",
+        "version": 1,
+        "audioUrl": "",
+        "durationSeconds": 0,
+        "taskId": "",
+        "questionIds": [],
+        "sessionMode": "overnight"
+      },
+      {
+        "id": "check-in",
+        "type": "check_in",
+        "version": 1,
+        "audioUrl": "",
+        "durationSeconds": 0,
+        "taskId": "",
+        "questionIds": [
+          "sleep-quality",
+          "alertness"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "id": "sleep-quality",
+        "prompt": "How well did you sleep last night?",
+        "type": "scale",
+        "required": true,
+        "options": [],
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "labels": [
+          "Very poorly",
+          "Poorly",
+          "Okay",
+          "Well",
+          "Very well"
+        ]
+      },
+      {
+        "id": "alertness",
+        "prompt": "How alert do you feel right now?",
+        "type": "scale",
+        "required": true,
+        "options": [],
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "labels": [
+          "Very sleepy",
+          "Sleepy",
+          "Neutral",
+          "Alert",
+          "Very alert"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "brown",
+        "label": "Brown noise",
+        "weight": 1,
+        "activityIds": [
+          "sound"
+        ]
+      },
+      {
+        "id": "silence",
+        "label": "Silence",
+        "weight": 1,
+        "activityIds": [
+          "quiet"
+        ]
+      }
+    ],
+    "nightlySchedule": [
+      {
+        "night": 1,
+        "phase": "evening",
+        "conditionId": "silence",
+        "activityIds": []
+      },
+      {
+        "night": 1,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "check-in"
+        ]
+      },
+      {
+        "night": 2,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 2,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "check-in"
+        ]
+      },
+      {
+        "night": 3,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 3,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "check-in"
+        ]
+      },
+      {
+        "night": 4,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 4,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "check-in"
+        ]
+      },
+      {
+        "night": 5,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 5,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "check-in"
+        ]
+      },
+      {
+        "night": 6,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 6,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "check-in"
+        ]
+      },
+      {
+        "night": 7,
+        "phase": "evening",
+        "conditionId": "assigned",
+        "activityIds": []
+      },
+      {
+        "night": 7,
+        "phase": "morning",
+        "conditionId": "none",
+        "activityIds": [
+          "check-in"
+        ]
+      }
+    ],
+    "randomization": {
+      "method": "paired_crossover",
+      "unit": "night",
+      "allocationOwner": "server",
+      "pairs": [
+        {
+          "nights": [
+            2,
+            3
+          ],
+          "conditionIds": [
+            "brown",
+            "silence"
+          ]
+        },
+        {
+          "nights": [
+            4,
+            5
+          ],
+          "conditionIds": [
+            "brown",
+            "silence"
+          ]
+        },
+        {
+          "nights": [
+            6,
+            7
+          ],
+          "conditionIds": [
+            "brown",
+            "silence"
+          ]
+        }
+      ]
+    }
+  },
+  "durationNights": 7,
+  "instructions": "Night 1 silence baseline; three randomized brown-noise/silence pairs. Start each evening in the pinned timezone between 18:00 and following noon; complete the following-morning check-in between 04:00 and 18:00. End and save explicitly. Missing nights remain missing; recovery is recorded separately.",
+  "eligibility": "Adults aged 18 or older; further study-specific eligibility requires review.",
+  "consentReference": "DRAFT-NOT-APPROVED"
+}

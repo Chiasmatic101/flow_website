@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/api/admin/experiments/preview",
+    "http": 401
+  },
+  {
+    "path": "/api/mina-tests/experiments",
+    "http": 200
+  },
+  {
+    "path": "/api/mina-tests/experiments/does-brown-noise-help-you-sleep",
+    "http": 404
+  }
+]

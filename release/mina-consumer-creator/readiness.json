@@ -1,0 +1,11 @@
+{
+  "stepsRendered": 3,
+  "draftProtocolUnchanged": true,
+  "sevenNightValid": true,
+  "sharedDisclosureCovered": true,
+  "blockers": [
+    "Register a verified supported Android build in the capability registry (current: com.chiasmatic.flow:1.0.0+13:4BC6F977AF4D65F7). This is a build-level requirement, not an experiment review."
+  ],
+  "status": "draft",
+  "enrollmentEnabled": false
+}

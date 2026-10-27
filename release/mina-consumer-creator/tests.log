@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: admin verification rejects missing sessions, forgery, absent claims, revoked access and disabled users
+ok 1 - admin verification rejects missing sessions, forgery, absent claims, revoked access and disabled users
+  ---
+  duration_ms: 6.401
+  type: 'test'
+  ...
+# Subtest: server validation blocks unsupported publishing, validates media, and omits private results
+ok 2 - server validation blocks unsupported publishing, validates media, and omits private results
+  ---
+  duration_ms: 8.5784
+  type: 'test'
+  ...
+# Subtest: drafts support arbitrary experiments without a runtime manifest or fixed protocol registry
+ok 3 - drafts support arbitrary experiments without a runtime manifest or fixed protocol registry
+  ---
+  duration_ms: 14.5413
+  type: 'test'
+  ...
+# Subtest: draft creation, optimistic conflicts and all enrolled scientific fields are immutable
+ok 4 - draft creation, optimistic conflicts and all enrolled scientific fields are immutable
+  ---
+  duration_ms: 10.1634
+  type: 'test'
+  ...
+# Subtest: schedule and session capabilities must be explicitly verified
+ok 5 - schedule and session capabilities must be explicitly verified
+  ---
+  duration_ms: 1.5042
+  type: 'test'
+  ...
+# Subtest: publication requires a server-recorded exact protocol review and verified compatible runtime capabilities
+ok 6 - publication requires a server-recorded exact protocol review and verified compatible runtime capabilities
+  ---
+  duration_ms: 9.0716
+  type: 'test'
+  ...
+# Subtest: published Firestore roots contain only the public projection; draft results and review identities remain server-only
+ok 7 - published Firestore roots contain only the public projection; draft results and review identities remain server-only
+  ---
+  duration_ms: 5.3292
+  type: 'test'
+  ...
+# Subtest: published protocol versions cannot be overwritten, while a new version preserves old snapshots
+ok 8 - published protocol versions cannot be overwritten, while a new version preserves old snapshots
+  ---
+  duration_ms: 4.2305
+  type: 'test'
+  ...
+# Subtest: declarative schema validates references, duplicate IDs, schedule coverage, question bounds and capabilities
+ok 9 - declarative schema validates references, duplicate IDs, schedule coverage, question bounds and capabilities
+  ---
+  duration_ms: 4.6937
+  type: 'test'
+  ...
+# Subtest: a generic multi-night cognitive and survey study publishes through verified reusable capabilities without a study registry
+ok 10 - a generic multi-night cognitive and survey study publishes through verified reusable capabilities without a study registry
+  ---
+  duration_ms: 6.2821
+  type: 'test'
+  ...
+# Subtest: guided brown-noise template preserves baseline and balanced pairs without inventing verified content
+ok 11 - guided brown-noise template preserves baseline and balanced pairs without inventing verified content
+  ---
+  duration_ms: 10.117
+  type: 'test'
+  ...
+# Subtest: paired plans resize only into whole pairs and reject overlapping or contradictory assignments
+ok 12 - paired plans resize only into whole pairs and reject overlapping or contradictory assignments
+  ---
+  duration_ms: 4.4611
+  type: 'test'
+  ...
+# Subtest: guided template drafts round-trip and enrolled pairs stay immutable
+ok 13 - guided template drafts round-trip and enrolled pairs stay immutable
+  ---
+  duration_ms: 9.0801
+  type: 'test'
+  ...
+# Subtest: removing an activity removes its exclusive questions but preserves shared questions
+ok 14 - removing an activity removes its exclusive questions but preserves shared questions
+  ---
+  duration_ms: 1.6227
+  type: 'test'
+  ...
+# Subtest: sound publication support requires an asset explicitly verified for the interpreter
+ok 15 - sound publication support requires an asset explicitly verified for the interpreter
+  ---
+  duration_ms: 1.5433
+  type: 'test'
+  ...
+# Subtest: legacy timed protocols retain their exact shape and hash; overnight has explicit non-timed semantics
+ok 16 - legacy timed protocols retain their exact shape and hash; overnight has explicit non-timed semantics
+  ---
+  duration_ms: 2.7279
+  type: 'test'
+  ...
+# Subtest: overnight drafts round-trip but cannot publish even with otherwise verified capabilities
+ok 17 - overnight drafts round-trip but cannot publish even with otherwise verified capabilities
+  ---
+  duration_ms: 3.8638
+  type: 'test'
+  ...
+# Subtest: structured enrollment and exact labelled scales round-trip and invalidate scientific review
+ok 18 - structured enrollment and exact labelled scales round-trip and invalidate scientific review
+  ---
+  duration_ms: 7.5235
+  type: 'test'
+  ...
+# Subtest: overnight capability requires matching Android evidence; local fixtures cannot publish
+ok 19 - overnight capability requires matching Android evidence; local fixtures cannot publish
+  ---
+  duration_ms: 2.2423
+  type: 'test'
+  ...
+# Subtest: published bundled sound identities cannot silently change under the same scientific version
+ok 20 - published bundled sound identities cannot silently change under the same scientific version
+  ---
+  duration_ms: 5.3286
+  type: 'test'
+  ...
+# Subtest: public release and the enrollment switch are independent, reviewed server-owned states
+ok 21 - public release and the enrollment switch are independent, reviewed server-owned states
+  ---
+  duration_ms: 5.2885
+  type: 'test'
+  ...
+# Subtest: adult floor applies to protocol validation and missing structured consent blocks publication
+ok 22 - adult floor applies to protocol validation and missing structured consent blocks publication
+  ---
+  duration_ms: 1.9193
+  type: 'test'
+  ...
+# Subtest: reviewed seven-night structure requires baseline, pairs, approved scales and morning check-ins
+ok 23 - reviewed seven-night structure requires baseline, pairs, approved scales and morning check-ins
+  ---
+  duration_ms: 7.7623
+  type: 'test'
+  ...
+# Subtest: consumer mode preserves a personal purpose and cannot publish on research-only capabilities
+ok 24 - consumer mode preserves a personal purpose and cannot publish on research-only capabilities
+  ---
+  duration_ms: 275.3046
+  type: 'test'
+  ...
+# Subtest: reviewed consumer publication preserves personal purpose and exposes wrap-up without publishing private findings
+ok 25 - reviewed consumer publication preserves personal purpose and exposes wrap-up without publishing private findings
+  ---
+  duration_ms: 17.7218
+  type: 'test'
+  ...
+# Subtest: private staging candidates keep verification false and cannot authorize public or production publication
+ok 26 - private staging candidates keep verification false and cannot authorize public or production publication
+  ---
+  duration_ms: 13.959
+  type: 'test'
+  ...
+# Subtest: optional Mina videos accept watch, shortened and Shorts URLs with strict IDs
+ok 27 - optional Mina videos accept watch, shortened and Shorts URLs with strict IDs
+  ---
+  duration_ms: 2.6361
+  type: 'test'
+  ...
+# Subtest: consumer sleep session policy survives validation, pins the interval, and requires its capability
+ok 28 - consumer sleep session policy survives validation, pins the interval, and requires its capability
+  ---
+  duration_ms: 30.8842
+  type: 'test'
+  ...
+# Subtest: custom consumer drafts support arbitrary sounds, durations, pairs and linked morning games
+ok 29 - custom consumer drafts support arbitrary sounds, durations, pairs and linked morning games
+  ---
+  duration_ms: 14.4228
+  type: 'test'
+  ...
+# Subtest: aggregate disclosure is pinned, optional for old plans and never permits research reuse
+ok 30 - aggregate disclosure is pinned, optional for old plans and never permits research reuse
+  ---
+  duration_ms: 3.2884
+  type: 'test'
+  ...
+# Subtest: admin outcome averages are version-specific, suppress small groups and expose no raw answers
+ok 31 - admin outcome averages are version-specific, suppress small groups and expose no raw answers
+  ---
+  duration_ms: 25.5605
+  type: 'test'
+  ...
+# Subtest: bundled sound draft choices use registered IDs and digests without claiming runtime verification
+ok 32 - bundled sound draft choices use registered IDs and digests without claiming runtime verification
+  ---
+  duration_ms: 1.4562
+  type: 'test'
+  ...
+# Subtest: bundled sound selector excludes missing registry entries, bad digests and unsupported IDs
+ok 33 - bundled sound selector excludes missing registry entries, bad digests and unsupported IDs
+  ---
+  duration_ms: 0.4446
+  type: 'test'
+  ...
+# Subtest: participant-controlled sleep uses no fixed duration and keeps condition assignments and linked check-ins
+ok 34 - participant-controlled sleep uses no fixed duration and keeps condition assignments and linked check-ins
+  ---
+  duration_ms: 1.2414
+  type: 'test'
+  ...
+# Subtest: scheduled and timed personal plans are preserved unless an operator explicitly changes timing
+ok 35 - scheduled and timed personal plans are preserved unless an operator explicitly changes timing
+  ---
+  duration_ms: 0.8263
+  type: 'test'
+  ...
+# Subtest: four consumer templates save and publish atomically without an experiment review
+ok 36 - four consumer templates save and publish atomically without an experiment review
+  ---
+  duration_ms: 31.1324
+  type: 'test'
+  ...
+# Subtest: consumer automatic publication rejects missing build evidence and unsupported configuration with one actionable issue
+ok 37 - consumer automatic publication rejects missing build evidence and unsupported configuration with one actionable issue
+  ---
+  duration_ms: 6.5123
+  type: 'test'
+  ...
+# Subtest: Brown Noise opens unchanged, preserves baseline/pairs and supports optional linked games with the shared disclosure
+ok 38 - Brown Noise opens unchanged, preserves baseline/pairs and supports optional linked games with the shared disclosure
+  ---
+  duration_ms: 2.1744
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10809.5586

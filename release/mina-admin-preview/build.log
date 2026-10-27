@@ -1,0 +1,60 @@
+▲ Next.js 16.4.3 (webpack)
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\akpoo because it is outside the current Git repository (C:\Users\akpoo\flow-website).
+ To use this directory, set `outputFileTracingRoot` in your Next.js config.
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\akpoo\flow-website\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\akpoo\flow-website\release\mina-admin-preview\website\package-lock.json
+
+✓ Running next.config.ts took 484ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 43s
+  Running TypeScript ...
+  Finished TypeScript in 24.7s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/20) ...
+  Generating static pages using 11 workers (5/20) 
+  Generating static pages using 11 workers (10/20) 
+  Generating static pages using 11 workers (15/20) 
+✓ Generating static pages using 11 workers (20/20) in 3.9s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /admin
+├ ƒ /admin/experiments
+├ ƒ /admin/experiments/[id]
+├ ƒ /admin/experiments/[id]/preview
+├ ƒ /api/admin/experiments
+├ ƒ /api/admin/experiments/preview
+├ ƒ /api/admin/session
+├ ƒ /api/championship/join
+├ ƒ /api/championship/receipt
+├ ƒ /api/championship/resend
+├ ƒ /api/championship/signup
+├ ƒ /api/mina-tests/community
+├ ƒ /api/mina-tests/enroll
+├ ƒ /api/mina-tests/experiments
+├ ƒ /api/mina-tests/experiments/[id]
+├ ƒ /check-email
+├ ƒ /coming-soon
+├ ƒ /competition
+├ ○ /delete-details
+├ ƒ /experiment
+├ ƒ /join
+├ ƒ /mina-tests
+├ ƒ /mina-tests/[id]
+├ ƒ /mina-tests/results
+├ ○ /privacy
+└ ○ /terms
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

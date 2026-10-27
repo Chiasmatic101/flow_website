@@ -1,0 +1,316 @@
+TAP version 13
+# Subtest: invite GET then form POST confirms once, timestamps membership and establishes a verified cookie without a prior session
+ok 1 - invite GET then form POST confirms once, timestamps membership and establishes a verified cookie without a prior session
+  ---
+  duration_ms: 128.6277
+  type: 'test'
+  ...
+# Subtest: existing invites can be inspected and confirmed when email site URL is unavailable; new delivery fails before writes
+ok 2 - existing invites can be inspected and confirmed when email site URL is unavailable; new delivery fails before writes
+  ---
+  duration_ms: 14.4231
+  type: 'test'
+  ...
+# Subtest: input validation normalizes email and referral; acquisition is bounded and strips referrer query
+ok 3 - input validation normalizes email and referral; acquisition is bounded and strips referrer query
+  ---
+  duration_ms: 2.025
+  type: 'test'
+  ...
+# Subtest: Android creates participant, sends invite; pending receipt has no joined access; valid token joins once
+ok 4 - Android creates participant, sends invite; pending receipt has no joined access; valid token joins once
+  ---
+  duration_ms: 9.398
+  type: 'test'
+  ...
+# Subtest: iPhone saves interest without email or joined access
+ok 5 - iPhone saves interest without email or joined access
+  ---
+  duration_ms: 3.4238
+  type: 'test'
+  ...
+# Subtest: concurrent duplicates reuse the participant; do not overwrite first attribution or gain verified access
+ok 6 - concurrent duplicates reuse the participant; do not overwrite first attribution or gain verified access
+  ---
+  duration_ms: 9.975
+  type: 'test'
+  ...
+# Subtest: valid referrals create exactly one signed_up relationship; invalid and self referrals are ignored
+ok 7 - valid referrals create exactly one signed_up relationship; invalid and self referrals are ignored
+  ---
+  duration_ms: 12.8956
+  type: 'test'
+  ...
+# Subtest: referral code collisions are checked before assignment
+ok 8 - referral code collisions are checked before assignment
+  ---
+  duration_ms: 29.1705
+  type: 'test'
+  ...
+# Subtest: invalid, expired and replaced tokens fail; resend cooldown and hourly limits cannot be bypassed by signup
+ok 9 - invalid, expired and replaced tokens fail; resend cooldown and hourly limits cannot be bypassed by signup
+  ---
+  duration_ms: 15.0325
+  type: 'test'
+  ...
+# Subtest: email failure retains the previous valid token; missing provider never claims sent; preview is development only
+ok 10 - email failure retains the previous valid token; missing provider never claims sent; preview is development only
+  ---
+  duration_ms: 10.7907
+  type: 'test'
+  ...
+# Subtest: shared request throttle rejects a burst; branded email escapes the link
+ok 11 - shared request throttle rejects a burst; branded email escapes the link
+  ---
+  duration_ms: 5.9967
+  type: 'test'
+  ...
+# Subtest: concurrent token consumption permits exactly one joined session
+ok 12 - concurrent token consumption permits exactly one joined session
+  ---
+  duration_ms: 5.4001
+  type: 'test'
+  ...
+# Subtest: Mina membership is additive, unique per test, and a pending session cannot enroll or expose referrals
+ok 13 - Mina membership is additive, unique per test, and a pending session cannot enroll or expose referrals
+  ---
+  duration_ms: 6.8912
+  type: 'test'
+  ...
+# Subtest: legacy verified invite stays valid; explicit Mina consent enrolls without another email and preserves historical fields
+ok 14 - legacy verified invite stays valid; explicit Mina consent enrolls without another email and preserves historical fields
+  ---
+  duration_ms: 6.9966
+  type: 'test'
+  ...
+# Subtest: new real-domain referral qualifies only after confirmed Mina enrollment; duplicates and clicks award nothing
+ok 15 - new real-domain referral qualifies only after confirmed Mina enrollment; duplicates and clicks award nothing
+  ---
+  duration_ms: 7.3638
+  type: 'test'
+  ...
+# Subtest: public count cache coalesces concurrent reads, caches for five minutes and uses a nonnumeric error fallback
+ok 16 - public count cache coalesces concurrent reads, caches for five minutes and uses a nonnumeric error fallback
+  ---
+  duration_ms: 2.3851
+  type: 'test'
+  ...
+# Subtest: database-backed experiments preserve canonical IDs, consent snapshots, attribution and per-experiment membership
+ok 17 - database-backed experiments preserve canonical IDs, consent snapshots, attribution and per-experiment membership
+  ---
+  duration_ms: 13.1926
+  type: 'test'
+  ...
+# Subtest: pausing blocks signup and verified enrollment while old email links still verify without enrolling
+ok 18 - pausing blocks signup and verified enrollment while old email links still verify without enrolling
+  ---
+  duration_ms: 11.6773
+  type: 'test'
+  ...
+# Subtest: unverified capabilities block enrollment and confirmation cannot assign a different protocol snapshot
+ok 19 - unverified capabilities block enrollment and confirmation cannot assign a different protocol snapshot
+  ---
+  duration_ms: 22.4487
+  type: 'test'
+  ...
+# Subtest: enrollment reads the server-only canonical configuration and never writes private metadata to the public root
+ok 20 - enrollment reads the server-only canonical configuration and never writes private metadata to the public root
+  ---
+  duration_ms: 6.6353
+  type: 'test'
+  ...
+# Subtest: admin verification rejects missing sessions, forgery, absent claims, revoked access and disabled users
+ok 21 - admin verification rejects missing sessions, forgery, absent claims, revoked access and disabled users
+  ---
+  duration_ms: 9.5997
+  type: 'test'
+  ...
+# Subtest: server validation blocks unsupported publishing, validates media, and omits private results
+ok 22 - server validation blocks unsupported publishing, validates media, and omits private results
+  ---
+  duration_ms: 11.1708
+  type: 'test'
+  ...
+# Subtest: drafts support arbitrary experiments without a runtime manifest or fixed protocol registry
+ok 23 - drafts support arbitrary experiments without a runtime manifest or fixed protocol registry
+  ---
+  duration_ms: 16.5626
+  type: 'test'
+  ...
+# Subtest: draft creation, optimistic conflicts and all enrolled scientific fields are immutable
+ok 24 - draft creation, optimistic conflicts and all enrolled scientific fields are immutable
+  ---
+  duration_ms: 14.4155
+  type: 'test'
+  ...
+# Subtest: schedule and session capabilities must be explicitly verified
+ok 25 - schedule and session capabilities must be explicitly verified
+  ---
+  duration_ms: 2.6337
+  type: 'test'
+  ...
+# Subtest: publication requires a server-recorded exact protocol review and verified compatible runtime capabilities
+ok 26 - publication requires a server-recorded exact protocol review and verified compatible runtime capabilities
+  ---
+  duration_ms: 29.9425
+  type: 'test'
+  ...
+# Subtest: published Firestore roots contain only the public projection; draft results and review identities remain server-only
+ok 27 - published Firestore roots contain only the public projection; draft results and review identities remain server-only
+  ---
+  duration_ms: 34.2919
+  type: 'test'
+  ...
+# Subtest: published protocol versions cannot be overwritten, while a new version preserves old snapshots
+ok 28 - published protocol versions cannot be overwritten, while a new version preserves old snapshots
+  ---
+  duration_ms: 9.2979
+  type: 'test'
+  ...
+# Subtest: declarative schema validates references, duplicate IDs, schedule coverage, question bounds and capabilities
+ok 29 - declarative schema validates references, duplicate IDs, schedule coverage, question bounds and capabilities
+  ---
+  duration_ms: 7.5202
+  type: 'test'
+  ...
+# Subtest: a generic multi-night cognitive and survey study publishes through verified reusable capabilities without a study registry
+ok 30 - a generic multi-night cognitive and survey study publishes through verified reusable capabilities without a study registry
+  ---
+  duration_ms: 9.0258
+  type: 'test'
+  ...
+# Subtest: guided brown-noise template preserves baseline and balanced pairs without inventing verified content
+ok 31 - guided brown-noise template preserves baseline and balanced pairs without inventing verified content
+  ---
+  duration_ms: 10.4693
+  type: 'test'
+  ...
+# Subtest: paired plans resize only into whole pairs and reject overlapping or contradictory assignments
+ok 32 - paired plans resize only into whole pairs and reject overlapping or contradictory assignments
+  ---
+  duration_ms: 7.1883
+  type: 'test'
+  ...
+# Subtest: guided template drafts round-trip and enrolled pairs stay immutable
+ok 33 - guided template drafts round-trip and enrolled pairs stay immutable
+  ---
+  duration_ms: 11.5055
+  type: 'test'
+  ...
+# Subtest: removing an activity removes its exclusive questions but preserves shared questions
+ok 34 - removing an activity removes its exclusive questions but preserves shared questions
+  ---
+  duration_ms: 2.2401
+  type: 'test'
+  ...
+# Subtest: sound publication support requires an asset explicitly verified for the interpreter
+ok 35 - sound publication support requires an asset explicitly verified for the interpreter
+  ---
+  duration_ms: 4.0367
+  type: 'test'
+  ...
+# Subtest: legacy timed protocols retain their exact shape and hash; overnight has explicit non-timed semantics
+ok 36 - legacy timed protocols retain their exact shape and hash; overnight has explicit non-timed semantics
+  ---
+  duration_ms: 10.0559
+  type: 'test'
+  ...
+# Subtest: overnight drafts round-trip but cannot publish even with otherwise verified capabilities
+ok 37 - overnight drafts round-trip but cannot publish even with otherwise verified capabilities
+  ---
+  duration_ms: 20.0597
+  type: 'test'
+  ...
+# Subtest: structured enrollment and exact labelled scales round-trip and invalidate scientific review
+ok 38 - structured enrollment and exact labelled scales round-trip and invalidate scientific review
+  ---
+  duration_ms: 26.1775
+  type: 'test'
+  ...
+# Subtest: overnight capability requires matching Android evidence; local fixtures cannot publish
+ok 39 - overnight capability requires matching Android evidence; local fixtures cannot publish
+  ---
+  duration_ms: 2.5384
+  type: 'test'
+  ...
+# Subtest: published bundled sound identities cannot silently change under the same scientific version
+ok 40 - published bundled sound identities cannot silently change under the same scientific version
+  ---
+  duration_ms: 11.9003
+  type: 'test'
+  ...
+# Subtest: public release and the enrollment switch are independent, reviewed server-owned states
+ok 41 - public release and the enrollment switch are independent, reviewed server-owned states
+  ---
+  duration_ms: 8.6645
+  type: 'test'
+  ...
+# Subtest: adult floor applies to protocol validation and missing structured consent blocks publication
+ok 42 - adult floor applies to protocol validation and missing structured consent blocks publication
+  ---
+  duration_ms: 1.1038
+  type: 'test'
+  ...
+# Subtest: reviewed seven-night structure requires baseline, pairs, approved scales and morning check-ins
+ok 43 - reviewed seven-night structure requires baseline, pairs, approved scales and morning check-ins
+  ---
+  duration_ms: 46.1463
+  type: 'test'
+  ...
+# Subtest: consumer mode preserves a personal purpose and cannot publish on research-only capabilities
+ok 44 - consumer mode preserves a personal purpose and cannot publish on research-only capabilities
+  ---
+  duration_ms: 140.4873
+  type: 'test'
+  ...
+# Subtest: reviewed consumer publication preserves personal purpose and exposes wrap-up without publishing private findings
+ok 45 - reviewed consumer publication preserves personal purpose and exposes wrap-up without publishing private findings
+  ---
+  duration_ms: 15.9491
+  type: 'test'
+  ...
+# Subtest: private staging candidates keep verification false and cannot authorize public or production publication
+ok 46 - private staging candidates keep verification false and cannot authorize public or production publication
+  ---
+  duration_ms: 11.1828
+  type: 'test'
+  ...
+# Subtest: optional Mina videos accept watch, shortened and Shorts URLs with strict IDs
+ok 47 - optional Mina videos accept watch, shortened and Shorts URLs with strict IDs
+  ---
+  duration_ms: 4.4284
+  type: 'test'
+  ...
+# Subtest: consumer sleep session policy survives validation, pins the interval, and requires its capability
+ok 48 - consumer sleep session policy survives validation, pins the interval, and requires its capability
+  ---
+  duration_ms: 212.2791
+  type: 'test'
+  ...
+# Subtest: custom consumer drafts support arbitrary sounds, durations, pairs and linked morning games
+ok 49 - custom consumer drafts support arbitrary sounds, durations, pairs and linked morning games
+  ---
+  duration_ms: 36.4469
+  type: 'test'
+  ...
+# Subtest: aggregate disclosure is pinned, optional for old plans and never permits research reuse
+ok 50 - aggregate disclosure is pinned, optional for old plans and never permits research reuse
+  ---
+  duration_ms: 3.8341
+  type: 'test'
+  ...
+# Subtest: admin outcome averages are version-specific, suppress small groups and expose no raw answers
+ok 51 - admin outcome averages are version-specific, suppress small groups and expose no raw answers
+  ---
+  duration_ms: 44.3278
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14887.7449
