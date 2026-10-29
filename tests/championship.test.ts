@@ -492,3 +492,123 @@ test('tester endpoints enforce administrator authorization and reject cross-orig
   const profile = await import('../app/api/testing/profile/route')
   assert.equal((await profile.POST(new Request('https://flux.example/api/testing/profile', { method: 'POST', headers: { Origin: 'https://evil.example', 'Content-Type': 'application/json' }, body: '{}' }))).status, 403)
 })
+
+
+async function invitationFixture() {
+  const { testerInvitationService } = await import('../lib/server/tester-invitations')
+  let clock = Date.now(), fail = false, url: string | undefined = 'https://play.google.com/apps/testing/com.chiasmatic.flow'
+  const store = new MemoryStore(() => clock)
+  const sent: { recipient: string; playEmail: string; key: string; url: string }[] = []
+  await store.transaction(async tx => { tx.set('fluxAndroidTesters/tester', { active: true, emailVerified: true, consent: true, email: 'verified@example.org', playEmail: 'google@example.org', status: 'pending' }) })
+  const service = testerInvitationService({ store, now: () => clock, optInUrl: () => url, send: async (recipient, playEmail, url, key) => { if (fail) throw new Error('Private provider detail must not be stored'); sent.push({ recipient, playEmail, url, key }) } })
+  const input = (status: string, expectedStatus = 'pending') => ({ id: 'tester', status, expectedStatus, expectedPlayEmail: 'google@example.org' })
+  return { store, sent, service, input, fail: (value: boolean) => { fail = value }, url: (value: string | undefined) => { url = value }, advance: (ms: number) => { clock += ms } }
+}
+
+test('Added sends one branded invitation to the verified signup email; refreshes and repeated updates do not resend', async () => {
+  const f = await invitationFixture()
+  assert.equal((await f.service.change(f.input('added'), 'admin'))?.status, 'sent')
+  assert.equal((await f.service.change(f.input('added', 'added'), 'admin'))?.status, 'sent')
+  await f.service.retry('tester', 'google@example.org')
+  assert.equal(f.sent.length, 1)
+  assert.equal(f.sent[0].recipient, 'verified@example.org')
+  assert.equal(f.sent[0].playEmail, 'google@example.org')
+  const row = await f.store.get<{ status: string; invitation: { sentAt: unknown } }>('fluxAndroidTesters/tester')
+  assert.equal(row?.status, 'added'); assert(row.invitation.sentAt)
+  assert.equal([...f.store.docs.keys()].some(path => path.startsWith('mina')), false)
+  const { testerInvitationEmail } = await import('../lib/server/championship-email')
+  const email = testerInvitationEmail(f.sent[0].url, '<unsafe>')
+  assert.match(email.text, /Become a tester/); assert.match(email.text, /same Google account/)
+  assert.match(email.text, /does not enroll/); assert.match(email.html, /&lt;unsafe&gt;/)
+})
+
+test('Pending and legacy Invited never send; unverified, stale and nonconsenting records cannot send', async () => {
+  const f = await invitationFixture()
+  await f.service.change(f.input('pending'), 'admin')
+  await f.service.change(f.input('invited'), 'admin')
+  assert.equal(f.sent.length, 0)
+  await assert.rejects(f.service.retry('tester', 'google@example.org'), isError('queue_changed'))
+  await assert.rejects(f.service.change(f.input('added'), 'admin'), isError('queue_changed'))
+  await f.store.transaction(async tx => tx.update('fluxAndroidTesters/tester', { emailVerified: false }))
+  await assert.rejects(f.service.change(f.input('added', 'invited'), 'admin'), isError('invalid_input'))
+  await f.store.transaction(async tx => tx.update('fluxAndroidTesters/tester', { emailVerified: true, consent: false }))
+  await assert.rejects(f.service.change(f.input('added', 'invited'), 'admin'), isError('invalid_input'))
+  assert.equal(f.sent.length, 0)
+})
+
+test('Delivery failures retain Added, store sanitized error and allow one concurrent retry', async () => {
+  const f = await invitationFixture(); f.fail(true)
+  const result = await f.service.change(f.input('added'), 'admin')
+  assert.equal(result?.status, 'failed'); assert.equal(result.errorCode, 'email_delivery_not_confirmed')
+  assert.equal((await f.store.get<{ status: string }>('fluxAndroidTesters/tester'))?.status, 'added')
+  assert.equal(JSON.stringify([...f.store.docs.values()]).includes('Private provider detail'), false)
+  f.fail(false)
+  await Promise.all([f.service.retry('tester', 'google@example.org'), f.service.retry('tester', 'google@example.org')])
+  assert.equal(f.sent.length, 1)
+  await f.service.change(f.input('pending', 'added'), 'admin')
+  await f.service.change(f.input('added'), 'admin')
+  assert.equal(f.sent.length, 1, 'Toggling status must not duplicate the invitation')
+})
+
+test('Missing/unsafe Play URL records failure without reverting Added; configuration can be fixed then retried', async () => {
+  const f = await invitationFixture(); f.url(undefined)
+  assert.equal((await f.service.change(f.input('added'), 'admin'))?.errorCode, 'play_opt_in_url_not_configured')
+  assert.equal((await f.store.get<{ status: string }>('fluxAndroidTesters/tester'))?.status, 'added')
+  f.url('https://play.google.com/apps/testing/com.chiasmatic.flow')
+  assert.equal((await f.service.retry('tester', 'google@example.org'))?.status, 'sent')
+  const { playOptInUrl } = await import('../lib/server/tester-invitations')
+  for (const url of ['http://play.google.com/apps/testing/com.chiasmatic.flow', 'https://evil.example/apps/testing/com.chiasmatic.flow', 'https://play.google.com/apps/testing/com.other', 'https://user:pass@play.google.com/apps/testing/com.chiasmatic.flow']) assert.equal(playOptInUrl(url), null)
+})
+
+test('Ambiguous old deliveries require review instead of resending outside provider deduplication window', async () => {
+  const f = await invitationFixture(); f.fail(true)
+  await f.service.change(f.input('added'), 'admin')
+  f.advance(24 * 3600000); f.fail(false)
+  assert.equal((await f.service.retry('tester', 'google@example.org'))?.status, 'review_required')
+  assert.equal(f.sent.length, 0)
+})
+
+test('Changed Play email and inactive records cannot retry a previous invitation', async () => {
+  const f = await invitationFixture(); f.fail(true)
+  await f.service.change(f.input('added'), 'admin')
+  await f.store.transaction(async tx => tx.update('fluxAndroidTesters/tester', { playEmail: 'changed@example.org', status: 'pending' }))
+  await assert.rejects(f.service.retry('tester', 'google@example.org'), isError('queue_changed'))
+  f.fail(false)
+  await f.service.change({ ...f.input('added'), expectedPlayEmail: 'changed@example.org' }, 'admin')
+  assert.equal(f.sent.length, 1); assert.equal(f.sent[0].playEmail, 'changed@example.org')
+})
+
+test('Mina visibility starts at 50%, pauses offscreen and resumes without seeking or restarting', async () => {
+  const { MinaPlayback } = await import('../lib/mina-video-playback')
+  let plays = 0, pauses = 0
+  const player = new MinaPlayback({ playVideo: () => { plays++ }, pauseVideo: () => { pauses++ } })
+  player.setReduced(false); player.setVisible(0.49); player.setReady(); assert.equal(plays, 0)
+  player.setVisible(0.5); assert.equal(plays, 1)
+  player.setVisible(0); assert(pauses > 0)
+  player.setVisible(0.75); assert.equal(plays, 2)
+  player.setPageVisible(false); const before = plays
+  player.setVisible(1); assert.equal(plays, before)
+  player.setPageVisible(true); assert.equal(plays, before + 1)
+  player.onEnded(); player.setVisible(0); player.setVisible(1); assert.equal(plays, before + 1, 'An ended video never restarts automatically')
+  player.dispose()
+})
+
+test('Mina reduced-motion preference requires manual play and only one embed owns playback', async () => {
+  const { MinaPlayback } = await import('../lib/mina-video-playback')
+  let firstPlays = 0, firstPauses = 0, secondPlays = 0
+  const first = new MinaPlayback({ playVideo: () => { firstPlays++ }, pauseVideo: () => { firstPauses++ } })
+  first.setVisible(1); first.setReady(); assert.equal(firstPlays, 0)
+  first.playManually(); assert.equal(firstPlays, 1)
+  first.setVisible(0); first.setVisible(1); assert.equal(firstPlays, 1, 'Reduced motion does not autoresume after leaving the view')
+  first.setReduced(false); const pausedBefore = firstPauses
+  const second = new MinaPlayback({ playVideo: () => { secondPlays++ }, pauseVideo: () => {} })
+  second.setReduced(false); second.setVisible(1); second.setReady()
+  assert.equal(secondPlays, 1); assert(firstPauses > pausedBefore)
+  first.onPlaying(); first.dispose(); second.dispose()
+})
+
+test('Invitation retry endpoint remains admin-protected and rejects cross-origin requests', async () => {
+  const route = await import('../app/api/admin/testers/route')
+  const response = await route.POST(new Request('https://flux.example/api/admin/testers', { method: 'POST', headers: { Origin: 'https://evil.example', 'Content-Type': 'application/json' }, body: '{}' }))
+  assert.equal(response.status, 403)
+})

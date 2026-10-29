@@ -2,6 +2,9 @@ import 'server-only'
 import { FieldPath } from 'firebase-admin/firestore'
 import { championshipDatabase } from '../firebase-admin'
 import { FunnelError } from '../championship-validation'
+import { testerInvitationService } from './tester-invitations'
+import { firestoreStore } from './championship-store'
+import { sendTesterInvitation } from './championship-email'
 import { safePlayEmail } from './championship-service'
 export function testerCollection(platform: string) {
   if (platform !== 'android' && platform !== 'iphone') throw new FunnelError('invalid_device')
@@ -27,18 +30,10 @@ export function validateTesterStatus(body: unknown) {
   if (!input || typeof input.id !== 'string' || !/^[a-zA-Z0-9-]{1,80}$/.test(input.id) || !['pending', 'invited', 'added'].includes(String(input.status)) || !['pending', 'invited', 'added'].includes(String(input.expectedStatus)) || (input.status === 'added' && input.confirmedAdded !== true)) throw new FunnelError('invalid_input')
   return { id: input.id, status: String(input.status), expectedStatus: String(input.expectedStatus), expectedPlayEmail: input.expectedPlayEmail }
 }
-export async function updateTesterStatus(body: unknown, adminUid: string) {
-  const input = validateTesterStatus(body)
-  const db = championshipDatabase()
-  const ref = db.collection('fluxAndroidTesters').doc(input.id)
-  const audit = db.collection('fluxTesterAudit').doc()
-  const { FieldValue } = await import('firebase-admin/firestore')
-  await db.runTransaction(async tx => {
-    const doc = await tx.get(ref)
-    if (!doc.exists || doc.get('active') !== true || doc.get('emailVerified') !== true || doc.get('consent') !== true) throw new FunnelError('invalid_input')
-    if (doc.get('status') !== input.expectedStatus || doc.get('playEmail') !== input.expectedPlayEmail) throw new FunnelError('queue_changed', 409)
-    if (!safePlayEmail(doc.get('playEmail') ?? '')) throw new FunnelError('invalid_play_email')
-    tx.update(ref, { status: input.status, updatedAt: FieldValue.serverTimestamp() })
-    tx.set(audit, { participantId: input.id, from: input.expectedStatus, to: input.status, adminUid, createdAt: FieldValue.serverTimestamp() })
-  })
+function invitations() { return testerInvitationService({ store: firestoreStore(), send: sendTesterInvitation, optInUrl: () => process.env.GOOGLE_PLAY_TESTING_URL }) }
+export async function updateTesterStatus(body: unknown, adminUid: string) { return invitations().change(validateTesterStatus(body), adminUid) }
+export async function retryTesterInvitation(body: unknown) {
+  const input = body as Record<string, unknown> | null
+  if (!input || typeof input.id !== 'string' || !/^[a-zA-Z0-9-]{1,80}$/.test(input.id) || typeof input.expectedPlayEmail !== 'string') throw new FunnelError('invalid_input')
+  return invitations().retry(input.id, input.expectedPlayEmail)
 }

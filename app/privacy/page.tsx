@@ -47,7 +47,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-black text-white">Optional YouTube videos</h2>
-            <p className="mt-3">Mina videos may use YouTube’s embedded player. Google may process device and network information, cookies or identifiers when a video loads or plays. We do not send your private challenge answers to YouTube. You can use the text experience without watching videos.</p>
+            <p className="mt-3">Mina videos use YouTube’s embedded player. On supported browsers they load and play muted when visible, and pause when out of view. Reduced-motion preferences disable automatic playback; you can choose to play manually. Google may process device and network information, cookies or identifiers when a video loads or plays. We do not send your private challenge answers to YouTube. You can use the text experience without watching videos.</p>
             <p><a href="https://policies.google.com/privacy" className="text-cyan-300">Google Privacy Policy</a> · <a href="https://www.youtube.com/t/terms" className="text-cyan-300">YouTube Terms of Service</a></p>
           </section>
 

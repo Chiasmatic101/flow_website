@@ -22,3 +22,18 @@ export function resendMailer(): Mailer {
     },
   }
 }
+
+export function testerInvitationEmail(url: string, playEmail: string) {
+  const escape = (value: string) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+  return {
+    subject: 'You’ve been added to Flux testing',
+    text: `FLUX / MINA TESTS\n\nOur administrator has confirmed adding your Google account to the Flux Google Play testing group.\n\nUse the same Google account added in Play Console: ${playEmail}\n\n1. Open ${url} with that Google account.\n2. Select "Become a tester".\n3. Install Flux from Google Play and sign in with your normal Flux account.\n\nMina Tests experiments will become available as they launch. This invitation does not enroll you in an experiment. Google Play access can take time to update; contact us if access is unavailable.\n\nFor help or to stop testing communications: alankelly@chiasmatic.co`,
+    html: `<div style="background:#0d0e20;color:#f4f2ff;padding:32px 20px;font-family:Arial,sans-serif"><div style="max-width:480px;margin:auto"><p style="color:#70dfff;font-weight:bold">FLUX / MINA TESTS</p><h1>You’re invited to test Flux.</h1><p>Our administrator has confirmed adding your Google account to the Flux Google Play testing group.</p><p>Use the same Google account added in Play Console: <strong>${escape(playEmail)}</strong>.</p><ol><li>Open the testing link with that Google account.</li><li>Select “Become a tester”.</li><li>Install Flux from Google Play and sign in.</li></ol><a href="${escape(url)}" style="display:inline-block;background:#6656ef;color:white;padding:18px 22px;border-radius:14px;text-decoration:none;font-weight:bold">JOIN FLUX TESTING</a><p>Mina Tests experiments will become available as they launch. This invitation does not enroll you in an experiment.</p><p>Google Play access can take time to update. For help or to stop testing communications: alankelly@chiasmatic.co</p></div></div>`,
+  }
+}
+export async function sendTesterInvitation(email: string, playEmail: string, url: string, idempotencyKey: string) {
+  const key = process.env.RESEND_API_KEY, from = process.env.CHAMPIONSHIP_FROM_EMAIL
+  if (!key || !from) throw new Error('Email not configured')
+  const { data, error } = await new Resend(key).emails.send({ from, to: [email], ...testerInvitationEmail(url, playEmail) }, { idempotencyKey })
+  if (error || !data?.id) throw new Error('Email request not accepted')
+}
