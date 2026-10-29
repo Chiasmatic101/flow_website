@@ -24,10 +24,15 @@ export function statusView(e: Pick<Experiment, 'status' | 'enrollmentEnabled'>):
 export function coverClass(seed: string) { return `md-cover-${[...seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % 4}` }
 
 export function planSummary(e: Experiment) {
+  // Older records may predate the plan format: describe them without it.
+  const p = e.protocol as Experiment['protocol'] | null | undefined
+  const nights = Number.isInteger(e.durationNights) && e.durationNights > 0 ? e.durationNights : null
+  if (!p || !Array.isArray(p.activities) || !Array.isArray(p.conditions)) return [e.protocolType ? readable(e.protocolType) : 'Older test', nights ? `${nights} nights` : ''].filter(Boolean).join(' · ')
   const kind = inferTemplate(e)
-  const sounds = e.protocol.conditions.map(c => c.label).filter(Boolean)
+  const sounds = p.conditions.map(c => c.label).filter(Boolean)
   const what = kind === 'comparison' && sounds.length >= 2 ? `${sounds[0]} vs ${sounds[1].toLowerCase()}` : kind === 'single' && sounds[0] ? sounds[0] : templateMeta[kind].title
-  return `${what} · ${e.durationNights} ${kind === 'comparison' || kind === 'single' ? 'nights' : 'days'}`
+  return nights ? `${what} · ${nights} ${kind === 'comparison' || kind === 'single' ? 'nights' : 'days'}` : what
 }
+function readable(value: string) { return value.replace(/[._-]+/g, ' ').replace(/^./, c => c.toUpperCase()) }
 
 export function count(value: number | null | undefined) { return value == null ? '—' : value.toLocaleString() }

@@ -29,7 +29,7 @@ function blockerStep(message: string): number | null {
 export default function MinaExperimentBuilder({ initial, counts, capabilities, startStep }: { initial: Experiment; counts?: Counts; capabilities: ExecutionCapabilities | null; startStep?: number }) {
   const router = useRouter()
   const isNew = !initial.revision
-  const starting = initial.protocol?.activities.length ? initial : { ...creatorTemplate('comparison', capabilities), id: initial.id }
+  const starting = initial.protocol?.activities?.length ? initial : { ...creatorTemplate('comparison', capabilities), id: initial.id }
   const [e, setE] = useState<Experiment>(starting), [saved, setSaved] = useState<Experiment>(starting)
   const [step, setStep] = useState(startStep && startStep >= 1 && startStep <= 4 ? startStep : isNew ? 1 : 2)
   const [screen, setScreen] = useState<PreviewScreen>(screenForStep[(startStep && startStep >= 1 && startStep <= 4 ? startStep : isNew ? 1 : 2) - 1])

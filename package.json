@@ -30,6 +30,9 @@
     "google-auth-library": "^11.3.1"
   },
   "engines": {
-    "node": ">=22"
+    "node": "24.x"
+  },
+  "overrides": {
+    "jwks-rsa": "^3.2.0"
   }
 }

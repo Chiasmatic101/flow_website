@@ -16,6 +16,8 @@ export function validateSignup(value: unknown): SignupInput {
   if (email.length > 254 || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) || /[\x00-\x1f\x7f]/.test(email)) throw new FunnelError('invalid_email')
   if (input.device !== 'android' && input.device !== 'iphone') throw new FunnelError('invalid_device')
   if (input.consent !== true) throw new FunnelError('consent_required')
+  if (input.purpose !== undefined && input.purpose !== 'tester') throw new FunnelError('invalid_input')
+  if (input.purpose === 'tester' && input.experimentId !== undefined) throw new FunnelError('invalid_input')
   const acquisition = { ...emptyAcquisition }
   if (input.acquisition !== undefined) {
     if (!input.acquisition || typeof input.acquisition !== 'object' || Array.isArray(input.acquisition)) throw new FunnelError('invalid_acquisition')
@@ -30,5 +32,5 @@ export function validateSignup(value: unknown): SignupInput {
       } else acquisition[key] = item.trim()
     }
   }
-  return { ...(input.experimentId !== undefined ? { experimentId: experimentId(input.experimentId) } : {}), email, device: input.device, consent: true, referralCode: normalizeReferral(input.referralCode), acquisition }
+  return { ...(input.purpose === 'tester' ? { purpose: 'tester' as const } : {}), ...(input.experimentId !== undefined ? { experimentId: experimentId(input.experimentId) } : {}), email, device: input.device, consent: true, referralCode: normalizeReferral(input.referralCode), acquisition }
 }

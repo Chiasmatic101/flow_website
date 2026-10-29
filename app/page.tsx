@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import MinaVideo from '@/components/MinaVideo'
-import { minaMedia } from '@/lib/server/mina-media'
 
 const useCases = [
   {
@@ -35,7 +34,6 @@ const sleepSteps = [
 ]
 
 export default async function Home() {
-  const media = await minaMedia()
   return (
     <main className="min-h-screen overflow-hidden text-white">
       {/* ambient glows */}
@@ -314,7 +312,7 @@ export default async function Home() {
       <section id="mina-tests" className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6" aria-labelledby="home-mina-title">
         <div className="glass-card mina-home-grid p-6 sm:p-10 md:p-12">
           <div><p className="eyebrow">SLEEP · SOUND · COGNITION</p><h2 id="home-mina-title" className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">Mina Tests</h2><p className="muted mt-5 text-lg">Community experiments into sleep, sound and cognition. Follow Mina as we ask questions, track patterns and share what we learn.</p><p className="muted mt-4">See what we&apos;re testing, how to take part and when genuine results are ready.</p><Link href="/mina-tests" className="flux-button mt-7">Learn more →</Link></div>
-          <MinaVideo {...media} />
+          <MinaVideo />
         </div>
       </section>
 
@@ -348,7 +346,7 @@ export default async function Home() {
               </Link>
             </div>
 
-            <p className="mt-6 text-sm text-white/35">Start with your email invite. Android download follows verification; iPhone is coming soon.</p>
+            <p className="mt-6 text-sm text-white/35">Verify your email to join the Android tester queue. Google Play access follows manual addition; iPhone is coming soon.</p>
           </div>
         </div>
       </section>

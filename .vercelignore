@@ -1,0 +1,9 @@
+# Only the website is deployed. Release snapshots, build logs and working
+# notes stay on this computer.
+release
+docs
+*.log
+stage8b-*.json
+tsconfig.tsbuildinfo
+.env.local
+.env.*.local

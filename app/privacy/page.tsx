@@ -12,13 +12,19 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
 
-        <p className="mt-6 text-white/50">Last updated: October 22, 2026</p>
+        <p className="mt-6 text-white/50">Last updated: October 29, 2026</p>
 
         <div className="mt-10 space-y-8 text-lg leading-8 text-white/60">
           <p>
             Flux is designed to help users improve focus, study routines, sleep,
             and recovery using personalized audio experiences.
           </p>
+
+          <section>
+            <h2 className="text-2xl font-black text-white">Optional Flux testing signups</h2>
+            <p className="mt-3">With your agreement, we save your email, phone platform, email verification status and time, signup time, referral and acquisition source, and testing-communications consent. Android testers can provide a different Google Play account email. Authorized administrators use this address to add testers manually in Google Play and track pending, invited or added status. Google processes the testing account address for access. iPhone signups join a separate waiting list. Firebase stores these records and our email provider sends verification and relevant testing communications. Website email verification does not create or verify a Flux app account, grant Google Play access, or enroll you in an experiment.</p>
+            <p className="mt-3">Request removal from testing communications or deletion of this separate website signup at alankelly@chiasmatic.co. These website records are separate from your app account and challenge history.</p>
+          </section>
 
           <section>
             <h2 className="text-2xl font-black text-white">Mina Tests personal challenges</h2>

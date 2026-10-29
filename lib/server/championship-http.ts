@@ -40,6 +40,7 @@ export function failure(error: unknown) {
   const messages: Record<string, string> = {
     flutter_capabilities_unverified_or_unsupported: 'Enrollment is unavailable until compatible app execution has been verified. Your existing invitation remains valid.', protocol_review_required: 'Enrollment is unavailable while the experiment protocol awaits review.', incomplete_protocol: 'This experiment is not ready for enrollment.',
     experiment_paused: 'Enrollment for this experiment is closed. Your verified invitation remains valid; try again when enrollment reopens.', experiment_unavailable: 'This experiment is not available for enrollment.',
+    invalid_play_email: 'Enter the Gmail or Google account email you use in Google Play.',
     invalid_input: 'Please check your details and try again.', invalid_email: 'Enter a valid email address.', invalid_device: 'Choose Android or iPhone.', consent_required: 'Please agree to Mina Tests updates to continue.', invalid_acquisition: 'Please reopen the Championship page and try again.',
     session_expired: 'Your signup session has expired. Enter your email again to request an invite.', rate_limited: 'Too many requests. Please wait before trying again.', invalid_request: 'Please submit this request from the Flux website.',
     backend_not_configured: process.env.NODE_ENV === 'development' ? 'Backend not configured. Add Firebase credentials and the site URL in .env.local; restart the server. No signup was completed.' : 'Signup is temporarily unavailable. Please try again later.',

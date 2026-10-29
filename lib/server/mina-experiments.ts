@@ -106,7 +106,7 @@ export async function saveExperiment(value: unknown, actor: string, expectedRevi
 // Admin pages call this after requireAdminPage. Numeric means are projected by
 // trusted submission code; no participant documents or raw answers leave here.
 export async function conditionAverages(e: Experiment, requestedQuestion?: string, database = championshipDatabase) {
-  if (e.protocol.enrollment?.aggregateResults !== true || !e.protocolHash) return null
+  if (e.protocol?.enrollment?.aggregateResults !== true || !e.protocolHash) return null
   const questions = e.protocol.questions.filter(q => q.type === 'scale')
   const question = questions.find(q => q.id === requestedQuestion) || questions[0]
   if (!question) return null

@@ -404,3 +404,91 @@ test('enrollment reads the server-only canonical configuration and never writes 
   assert.equal(root?.protocolReview, undefined)
   assert.equal((await f.store.get<Experiment>(`minaExperiments/${id}/private/admin`))?.enrollmentStarted, false)
 })
+
+
+test('tester signup verifies Android and iPhone without requiring a published experiment or enrolling', async () => {
+  for (const device of ['android', 'iphone'] as const) {
+    const f = await fixture()
+    const input = validateSignup({ ...f.input(`tester-${device}`), purpose: 'tester', device })
+    const signup = await f.service.signup(input)
+    assert.equal(signup.receipt.delivery, 'sent')
+    assert.equal(signup.receipt.purpose, 'tester')
+    assert.equal(await f.service.testerProfile(signup.sessionToken), null)
+    const token = rawToken(f.sent[0].url)
+    const invite = await f.store.get<{ participantId: string }>(`championshipInvites/${hashToken(token)}`)
+    assert(invite)
+    assert.equal(await f.store.get(minaMembershipPath(invite.participantId)), null)
+    assert.equal(await f.store.get(`fluxAndroidTesters/${invite.participantId}`), null)
+    assert.equal((await f.store.get<Participant>(`championshipParticipants/${invite.participantId}`))?.emailVerified, false)
+    await f.service.inspectInvite(token)
+    assert.equal((await f.store.get<Participant>(`championshipParticipants/${invite.participantId}`))?.emailVerified, false)
+    const joined = await f.service.join(token)
+    assert.equal(joined.purpose, 'tester')
+    const profile = await f.service.testerProfile(joined.sessionToken)
+    assert.equal(profile?.emailVerified, true)
+    assert.equal(profile?.device, device)
+    assert.equal(profile?.status, device === 'android' ? 'pending' : 'waiting')
+    const participant = await f.store.get<Participant>(`championshipParticipants/${invite.participantId}`)
+    assert(participant?.emailVerifiedAt)
+    assert(participant?.testingConsentAt)
+    assert.deepEqual(participant?.experimentIds, [])
+    assert.equal(await f.store.get(minaMembershipPath(invite.participantId)), null)
+    await assert.rejects(f.service.join(token), isError('used_invite'))
+    if (device === 'android') {
+      await assert.rejects(f.service.savePlayEmail(signup.sessionToken, 'google@example.org'), isError('session_expired'))
+      await f.service.savePlayEmail(joined.sessionToken, 'other-google@example.org')
+      assert.equal((await f.service.testerProfile(joined.sessionToken))?.playEmail, 'other-google@example.org')
+      await assert.rejects(f.service.savePlayEmail(joined.sessionToken, '=formula@example.org'), isError('invalid_play_email'))
+    } else {
+      await assert.rejects(f.service.savePlayEmail(joined.sessionToken, 'google@example.org'), isError('session_expired'))
+    }
+  }
+})
+
+test('tester duplicates preserve identity and first-touch attribution, and iPhone supports resend', async () => {
+  const f = await fixture()
+  const input = validateSignup({ ...f.input('tester-duplicate'), purpose: 'tester', device: 'iphone', acquisition: { utmSource: 'original' } })
+  await Promise.all([f.service.signup(input), f.service.signup(input)])
+  assert.equal(f.sent.length, 1)
+  const token = rawToken(f.sent[0].url)
+  const invite = await f.store.get<{ participantId: string }>(`championshipInvites/${hashToken(token)}`)
+  assert(invite)
+  const joined = await f.service.join(token)
+  const duplicate = await f.service.signup({ ...input, device: 'android', acquisition: { ...input.acquisition, utmSource: 'forged' } })
+  const participant = await f.store.get<Participant>(`championshipParticipants/${invite.participantId}`)
+  assert.equal(participant?.acquisition.utmSource, 'original')
+  assert.equal(participant?.device, 'iphone')
+  assert.equal((await f.service.testerProfile(joined.sessionToken))?.device, 'iphone')
+  assert.equal(await f.service.testerProfile(duplicate.sessionToken), null)
+  assert.equal((await f.service.resend(duplicate.sessionToken)).delivery, 'cooldown')
+})
+
+test('tester confirmation redirects to platform-aware testing page; forged purpose rejected', async () => {
+  const f = await fixture()
+  await f.service.signup(validateSignup({ ...f.input('tester-redirect'), purpose: 'tester' }))
+  const response = await confirmInvitation(new Request('https://flux.example/api/championship/join', { method: 'POST', headers: { Origin: 'https://flux.example', 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ token: rawToken(f.sent[0].url) }) }), () => f.service)
+  assert.equal(new URL(response.headers.get('location')!).pathname, '/testing')
+  assert.throws(() => validateSignup({ ...f.input('bad-purpose'), purpose: 'admin' }), isError('invalid_input'))
+  assert.throws(() => validateSignup({ ...f.input('bad-mixed'), purpose: 'tester', experimentId: activeMinaTest.id }), isError('invalid_input'))
+})
+
+
+test('Play CSV is deduplicated and excludes unverified, inactive, nonconsenting, test and unsafe rows', async () => {
+  const { playCsv, validateTesterStatus } = await import('../lib/server/tester-admin')
+  const row = { active: true, emailVerified: true, consent: true, playEmail: 'GOOGLE@example.org' }
+  assert.equal(playCsv([row, row, { ...row, playEmail: '=SUM@example.org' }, { ...row, isTestRecord: true }, { ...row, consent: false }, { ...row, active: false }, { ...row, emailVerified: false }]), 'google@example.org\r\n')
+  assert.throws(() => validateTesterStatus({ id: 'abc', status: 'added', expectedStatus: 'pending' }), FunnelError)
+  assert.throws(() => validateTesterStatus({ id: '../escape', status: 'pending', expectedStatus: 'pending' }), FunnelError)
+  assert.equal(validateTesterStatus({ id: 'abc', status: 'added', expectedStatus: 'invited', confirmedAdded: true }).status, 'added')
+})
+
+test('tester endpoints enforce administrator authorization and reject cross-origin changes before writes', async () => {
+  const admin = await import('../app/api/admin/testers/route')
+  const exportRoute = await import('../app/api/admin/testers/export/route')
+  // Outside a Next request, cookies() fails closed rather than opening access.
+  assert.notEqual((await admin.GET(new Request('https://flux.example/api/admin/testers'))).status, 200)
+  assert.notEqual((await exportRoute.GET(new Request('https://flux.example/api/admin/testers/export'))).status, 200)
+  assert.equal((await admin.PATCH(new Request('https://flux.example/api/admin/testers', { method: 'PATCH', headers: { Origin: 'https://evil.example', 'Content-Type': 'application/json' }, body: '{}' }))).status, 403)
+  const profile = await import('../app/api/testing/profile/route')
+  assert.equal((await profile.POST(new Request('https://flux.example/api/testing/profile', { method: 'POST', headers: { Origin: 'https://evil.example', 'Content-Type': 'application/json' }, body: '{}' }))).status, 403)
+})
